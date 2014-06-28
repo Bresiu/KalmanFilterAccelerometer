@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.util.List;
 
 public class Importer {
-    List<String> gpsDataLines;
+    List<String> sensorDataLines;
 
     public List<String> readData() {
         try {
-            gpsDataLines = Files.readLines(new File(Constants.GPS_FILE_IMPORT), Charsets.UTF_8,
+            sensorDataLines = Files.readLines(new File(Constants.SENSOR_FILE_IMPORT), Charsets.UTF_8,
                     new LineProcessor<List<String>>() {
                         List<String> result = Lists.newArrayList();
 
@@ -28,7 +28,7 @@ public class Importer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return gpsDataLines;
+        return sensorDataLines;
     }
 }
 

@@ -8,7 +8,7 @@ public class Exporter {
     public void writeData(String line) {
         line += "\n";
         try {
-            Files.append(line, new File(Constants.GPS_FILE_EXPORT), Charsets.UTF_8);
+            Files.append(line, new File(Constants.SENSOR_FILE_EXPORT), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }

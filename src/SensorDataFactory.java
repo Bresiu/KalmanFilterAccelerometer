@@ -2,16 +2,16 @@ import com.google.common.eventbus.EventBus;
 
 import java.util.List;
 
-public class GPSDataFactory {
+public class SensorDataFactory {
 
-    private List<String> gpsDataLines;
+    private List<String> sensorDataLines;
     private EventBus bus;
 
     private final long SLEEP_TIME = 1000;
 
-    public GPSDataFactory() {
+    public SensorDataFactory() {
         Importer importer = new Importer();
-        gpsDataLines = importer.readData();
+        sensorDataLines = importer.readData();
         registerBus();
         startFactory();
     }
@@ -23,9 +23,9 @@ public class GPSDataFactory {
     private void startFactory() {
         Thread thread = new Thread() {
             public void run() {
-                for (String string : gpsDataLines) {
-                    GPSSingleData gpsSingleData = proccessLine(string);
-                    bus.post(gpsSingleData);
+                for (String string : sensorDataLines) {
+                    SensorSingleData sensorSingleData = proccessLine(string);
+                    bus.post(sensorSingleData);
 
                     // Simulate GPS intervals
                     // pauseThread(SLEEP_TIME);
@@ -35,10 +35,9 @@ public class GPSDataFactory {
         thread.start();
     }
 
-    private GPSSingleData proccessLine(String gpsLine) {
-        String[] gpsParts = gpsLine.split(" ");
-        return new GPSSingleData(Float.valueOf(gpsParts[1]), Double.valueOf(gpsParts[2]),
-                Double.valueOf(gpsParts[3]), Long.valueOf(gpsParts[4]));
+    private SensorSingleData proccessLine(String sensorLine) {
+        String[] sensorParts = sensorLine.split(" ");
+        return new SensorSingleData(Long.valueOf(sensorParts[0]), Double.valueOf(sensorParts[1]));
     }
 
     private void pauseThread(long sleepTime) {
