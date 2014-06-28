@@ -55,15 +55,19 @@ plot "acc_log.dat" using 1:2 w l, "new_acc_log.dat" using 1:2 w l
 ```
 
 ALL (raw data + two Kalman charts):
+
 ![alt tag](https://raw.githubusercontent.com/Bresiu/KalmanFilterAccelerometer/master/charts/all.png)
 
 RAW DATA:
+
 ![alt tag](https://raw.githubusercontent.com/Bresiu/KalmanFilterAccelerometer/master/charts/raw.png)
 
 KALMAN FILTER WITH FILTER_GAIN == 0.9:
+
 ![alt tag](https://raw.githubusercontent.com/Bresiu/KalmanFilterAccelerometer/master/charts/gain0_9.png)
 
 KALMAN FILTER WITH FILTER_GAIN == 0.95:
+
 ![alt tag](https://raw.githubusercontent.com/Bresiu/KalmanFilterAccelerometer/master/charts/gain0_95.png)
 
 [gnuplot]:http://www.gnuplot.info/
