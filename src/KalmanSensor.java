@@ -3,9 +3,9 @@ import com.google.common.eventbus.Subscribe;
 public class KalmanSensor {
     private static final double VARIANCE = 0.05;    // Noise variance estimation in percent
 
-    private double noiseVariance;       // Noise variance array
+    private double noiseVariance;       // Noise variance
     private double predictedVariance;   // Predicted variance
-    private double predictedValue;      // Predicted values
+    private double predictedValue;      // Predicted value
 
     private boolean isInitialised;
 
@@ -38,14 +38,14 @@ public class KalmanSensor {
 
     public void process(long timestamp, double measurementValue) {
         if (isInitialised) {
-            // compute the Kalman gain for each dimension
+            // compute the Kalman gain
             double kalmanGain = predictedVariance / (predictedVariance + noiseVariance);
 
             // update the sensor prediction with the measurement
             double correctedValue = Constants.FILTER_GAIN * predictedValue + (1.0 - Constants.FILTER_GAIN) *
                     measurementValue + kalmanGain * (measurementValue - predictedValue);
 
-            // predict next variances and values
+            // predict next variance and value
             predictedVariance = predictedVariance * (1.0 - kalmanGain);
             predictedValue = correctedValue;
 
