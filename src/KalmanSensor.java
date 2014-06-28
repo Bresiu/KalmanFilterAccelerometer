@@ -2,7 +2,6 @@ import com.google.common.eventbus.Subscribe;
 
 public class KalmanSensor {
     private static final double VARIANCE = 0.05;    // Noise variance estimation in percent
-    private static final double FILTER_GAIN = 0.9;  // Filter gain
 
     private double noiseVariance;       // Noise variance array
     private double predictedVariance;   // Predicted variance
@@ -43,8 +42,8 @@ public class KalmanSensor {
             double kalmanGain = predictedVariance / (predictedVariance + noiseVariance);
 
             // update the sensor prediction with the measurement
-            double correctedValue = FILTER_GAIN * predictedValue + (1.0 - FILTER_GAIN) * measurementValue + kalmanGain *
-                    (measurementValue - predictedValue);
+            double correctedValue = Constants.FILTER_GAIN * predictedValue + (1.0 - Constants.FILTER_GAIN) *
+                    measurementValue + kalmanGain * (measurementValue - predictedValue);
 
             // predict next variances and values
             predictedVariance = predictedVariance * (1.0 - kalmanGain);
