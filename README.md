@@ -14,6 +14,7 @@ Input:
 ```bash
 acc_log.dat file
 ```
+
 with format:
 
     timestamp [millis] | accelerometer (one of axis)
@@ -31,9 +32,11 @@ Adjusting accuracy:
 ----------
 
 Adjust:
+
 ```bash
 Constants.FILTER_GAIN
 ```
+
 to value in range [0.0 - 1.0].
 Smaller the value is -> Kalman filter algorithm has less impact to the final data. 
 
@@ -50,6 +53,7 @@ Usage with [gnuplot]:
 ```bash
 plot "acc_log.dat" using 1:2 w l, "new_acc_log.dat" using 1:2 w l
 ```
+
 ALL (raw data + two Kalman charts):
 ![alt tag](https://raw.githubusercontent.com/Bresiu/KalmanFilterAccelerometer/master/charts/all.png)
 
