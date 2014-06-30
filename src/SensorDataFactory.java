@@ -37,7 +37,8 @@ public class SensorDataFactory {
 
     private SensorSingleData proccessLine(String sensorLine) {
         String[] sensorParts = sensorLine.split(" ");
-        return new SensorSingleData(Long.valueOf(sensorParts[0]), Double.valueOf(sensorParts[1]));
+        return new SensorSingleData(Long.valueOf(sensorParts[0]), Double.valueOf(sensorParts[1]),
+                Double.valueOf(sensorParts[2]), Double.valueOf(sensorParts[3]), Double.valueOf(sensorParts[4]));
     }
 
     private void pauseThread(long sleepTime) {
