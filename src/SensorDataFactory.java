@@ -37,8 +37,25 @@ public class SensorDataFactory {
 
     private SensorSingleData proccessLine(String sensorLine) {
         String[] sensorParts = sensorLine.split(" ");
-        return new SensorSingleData(Long.valueOf(sensorParts[0]), Double.valueOf(sensorParts[1]),
-                Double.valueOf(sensorParts[2]), Double.valueOf(sensorParts[3]), Double.valueOf(sensorParts[4]));
+
+        SensorSingleData sensorSingleData = new SensorSingleData();
+
+        sensorSingleData.setNumber(Long.valueOf(sensorParts[0]));
+        sensorSingleData.setDt(Long.valueOf(sensorParts[1]));
+
+        sensorSingleData.setAccX(Double.valueOf(sensorParts[2]));
+        sensorSingleData.setAccY(Double.valueOf(sensorParts[3]));
+        sensorSingleData.setAccZ(Double.valueOf(sensorParts[4]));
+
+        sensorSingleData.setGyroX(Double.valueOf(sensorParts[5]));
+        sensorSingleData.setGyroY(Double.valueOf(sensorParts[6]));
+        sensorSingleData.setGyroZ(Double.valueOf(sensorParts[7]));
+
+        sensorSingleData.setMagnX(Double.valueOf(sensorParts[8]));
+        sensorSingleData.setMagnY(Double.valueOf(sensorParts[9]));
+        sensorSingleData.setMagnZ(Double.valueOf(sensorParts[10]));
+
+        return sensorSingleData;
     }
 
     private void pauseThread(long sleepTime) {

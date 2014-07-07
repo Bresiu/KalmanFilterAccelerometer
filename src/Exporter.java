@@ -5,10 +5,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class Exporter {
-    public void writeData(String line) {
+    public void writeData(String name, String line) {
         line += "\n";
         try {
-            Files.append(line, new File(Constants.SENSOR_FILE_EXPORT), Charsets.UTF_8);
+            Files.append(line, new File(name), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
