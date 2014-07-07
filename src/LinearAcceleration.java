@@ -3,34 +3,34 @@ import com.google.common.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KalmanSensor {
+public class LinearAcceleration {
+
+    // Kalman
     private List<Double> noiseVariances;       // Noise variances
     private List<Double> predictedVariances;   // Predicted variances
     private List<Double> predictedValues;      // Predicted values
-
     private boolean isInitialised;
 
     private Exporter exporter;
-    private long count = 0;
 
+    // Low-Pass filter
     private double gravityX = 0.0;
     private double gravityY = 0.0;
     private double gravityZ = 0.0;
 
+    // Mean filter
     private int meanCounter;
-    private List<Double> meanList;
     private double meanX = 0;
     private double meanY = 0;
     private double meanZ = 0;
 
-    public KalmanSensor() {
+    public LinearAcceleration() {
         isInitialised = false;
         noiseVariances = new ArrayList<Double>();
         predictedVariances = new ArrayList<Double>();
         predictedValues = new ArrayList<Double>();
         exporter = new Exporter();
         meanCounter = 0;
-        meanList = new ArrayList<Double>();
         registerBus();
     }
 
@@ -38,10 +38,16 @@ public class KalmanSensor {
         BusProvider.getInstance().register(this);
     }
 
+    // TODO: change void to SensorSingleData
+    // TODO: move each filter to new class
+    // TODO: alpha in Low-Pass filter as: t / (t + dT), where t, the low-pass filter's time-constant
+    // TODO: and dT, the event delivery rate
+    // TODO: http://seattlesensor.wordpress.com/2013/01/01/accelerometer-sensor-data-processing/
+
     @Subscribe
     public void onSensorUpdate(SensorSingleData singleData) {
         passToFilter(singleData);
-        // meanFilter(singleData);
+        // meanFilter(singleData, Constants.KALMAN_DELTA_ERROR);
         // passData(singleData);
     }
 
@@ -58,73 +64,81 @@ public class KalmanSensor {
     }
 
     private void lowPassfilter(SensorSingleData singleData) {
-        float alpha;
+        gravityX = Constants.LOW_PASS_ALPHA * gravityX + (1 - Constants.LOW_PASS_ALPHA) * singleData.getAccX();
+        gravityY = Constants.LOW_PASS_ALPHA * gravityY + (1 - Constants.LOW_PASS_ALPHA) * singleData.getAccY();
+        gravityZ = Constants.LOW_PASS_ALPHA * gravityZ + (1 - Constants.LOW_PASS_ALPHA) * singleData.getAccZ();
 
-        if (!Constants.ALPHA_STATIC) {
-            // Find the sample period (between updates).
-            // Convert from nanoseconds to seconds
-            float dt = 1 / (count / (singleData.getDt() / 1000000000.0f));
+        // TODO move this to another method (merge with wikiFilter)
+        SensorSingleData linearAcceleration = new SensorSingleData();
 
-            alpha = Constants.TIME_CONSTANT / (Constants.TIME_CONSTANT + dt);
-        } else {
-            alpha = Constants.ALPHA;
-        }
+        linearAcceleration.setNumber(singleData.getNumber());
+        linearAcceleration.setAccX(singleData.getAccX() - gravityX);
+        linearAcceleration.setAccY(singleData.getAccY() - gravityY);
+        linearAcceleration.setAccZ(singleData.getAccZ() - gravityZ);
 
-        count++;
-
-        if (count > 5) {
-            gravityX = alpha * gravityX + (1 - alpha) * singleData.getAccX();
-            gravityY = alpha * gravityY + (1 - alpha) * singleData.getAccY();
-            gravityZ = alpha * gravityZ + (1 - alpha) * singleData.getAccZ();
-
-            SensorSingleData linearAcceleration = new SensorSingleData();
-
-            linearAcceleration.setNumber(singleData.getNumber());
-            linearAcceleration.setAccX(singleData.getAccX() - gravityX);
-            linearAcceleration.setAccY(singleData.getAccX() - gravityY);
-            linearAcceleration.setAccZ(singleData.getAccX() - gravityZ);
-
-            exportNewSensorData("linear_acceleration.dat", linearAcceleration);
-        }
-
+        removeNoise(Constants.LINEAR_ACCELERATION_FILE_EXPORT, linearAcceleration, Constants.LOW_PASS_DELTA_ERROR);
+        // exportNewSensorData(Constants.LINEAR_ACCELERATION_FILE_EXPORT,, linearAcceleration);
     }
 
     private void wikiFilter(SensorSingleData singleData) {
+        // y[i] = y[i] + alpha * (x[i] - y[i])
+        gravityX = gravityX + Constants.WIKIPEDIA_ALPHA * (singleData.getAccX() - gravityX);
+        gravityY = gravityY + Constants.WIKIPEDIA_ALPHA * (singleData.getAccY() - gravityY);
+        gravityZ = gravityZ + Constants.WIKIPEDIA_ALPHA * (singleData.getAccZ() - gravityZ);
 
+        SensorSingleData linearAcceleration = new SensorSingleData();
+
+        linearAcceleration.setNumber(singleData.getNumber());
+        linearAcceleration.setAccX(singleData.getAccX() - gravityX);
+        linearAcceleration.setAccY(singleData.getAccY() - gravityY);
+        linearAcceleration.setAccZ(singleData.getAccZ() - gravityZ);
+
+        removeNoise(Constants.LINEAR_ACCELERATION_FILE_EXPORT_2, linearAcceleration, Constants.LOW_PASS_DELTA_ERROR);
     }
 
-    private void meanFilter(SensorSingleData singleData) {
-        // TODO
-        meanCounter++;
+    private void removeNoise(String fileName, SensorSingleData singleData, Double deltaError) {
         double x = singleData.getAccX();
         double y = singleData.getAccY();
         double z = singleData.getAccZ();
-        if (x < Constants.DELTA_ERROR && x > Constants.DELTA_ERROR) {
-            x = 0;
-        }
-        if (y < Constants.DELTA_ERROR && y > Constants.DELTA_ERROR) {
-            y = 0;
-        }
-        if (z < Constants.DELTA_ERROR && z > Constants.DELTA_ERROR) {
-            z = 0;
-        }
+
+        if (x < deltaError && x > -deltaError) { x = 0; }
+        if (y < deltaError && y > -deltaError) { y = 0; }
+        if (z < deltaError && z > -deltaError) { z = 0; }
+
+        SensorSingleData sensorSingleData = new SensorSingleData();
+        sensorSingleData.setNumber(singleData.getNumber());
+        sensorSingleData.setAccX(x);
+        sensorSingleData.setAccY(y);
+        sensorSingleData.setAccZ(z);
+
+        exportNewSensorData(fileName, sensorSingleData);
+    }
+
+    private void meanFilter(String fileName, SensorSingleData singleData) {
+        meanCounter++;
+
+        double x = singleData.getAccX();
+        double y = singleData.getAccY();
+        double z = singleData.getAccZ();
+
         meanX += x;
         meanY += y;
         meanZ += z;
 
         if (meanCounter == Constants.MEAN_FILTER_WINDOW) {
-            meanList.add(meanX / Constants.MEAN_FILTER_WINDOW);
-            meanList.add(meanY / Constants.MEAN_FILTER_WINDOW);
-            meanList.add(meanZ / Constants.MEAN_FILTER_WINDOW);
+
+            meanX /= meanX / Constants.MEAN_FILTER_WINDOW;
+            meanY /= meanY / Constants.MEAN_FILTER_WINDOW;
+            meanZ /= meanZ / Constants.MEAN_FILTER_WINDOW;
 
             SensorSingleData sensorSingleData = new SensorSingleData();
-            sensorSingleData.setAccX(meanList.get(0));
-            sensorSingleData.setAccY(meanList.get(1));
-            sensorSingleData.setAccZ(meanList.get(2));
+            sensorSingleData.setNumber(singleData.getNumber());
+            sensorSingleData.setAccX(meanX);
+            sensorSingleData.setAccY(meanY);
+            sensorSingleData.setAccZ(meanZ);
 
-            exportNewSensorData(Constants.MEAN_SENSOR_FILE_EXPORT, sensorSingleData);
+            exportNewSensorData(fileName, sensorSingleData);
 
-            meanList.clear();
             meanCounter = 0;
             meanX = 0;
             meanY = 0;
@@ -132,12 +146,13 @@ public class KalmanSensor {
         }
     }
 
+    // KALMAN
     private void passData(SensorSingleData singleData) {
         List<Double> values = new ArrayList<Double>();
         values.add(singleData.getAccX());
         values.add(singleData.getAccY());
         values.add(singleData.getAccZ());
-        process(singleData.getDt(), values);
+        process(values);
     }
 
     public void init(List<Double> initValues) {
@@ -156,7 +171,7 @@ public class KalmanSensor {
         exportNewSensorData(Constants.SENSOR_FILE_EXPORT, sensorSingleData);
     }
 
-    public void process(long timestamp, List<Double> measurementValues) {
+    public void process(List<Double> measurementValues) {
         if (isInitialised) {
             List<Double> correctedValues = new ArrayList<Double>();
             for (int i = 0; i < measurementValues.size(); i++) {
@@ -185,6 +200,7 @@ public class KalmanSensor {
         }
     }
 
+    // EXPORT DATA
     private void exportNewSensorData(String name, SensorSingleData sensorSingleData) {
         exporter.writeData(name, sensorSingleData.toString());
     }
