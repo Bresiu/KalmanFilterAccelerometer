@@ -6,6 +6,10 @@ public class Constants {
     public static final float LOW_PASS_ALPHA = 0.8f;
     public static final double LOW_PASS_DELTA_ERROR = 0.02;
 
+    // Low-Pass Filter
+    public static final float HIGH_PASS_ALPHA = 0.8f;
+    public static final double HIGH_PASS_DELTA_ERROR = 0.02;
+
     // Wikipedia filter
     public static final float WIKIPEDIA_ALPHA = 0.15f;
 

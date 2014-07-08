@@ -13,10 +13,25 @@ public class LinearAcceleration {
 
     private Exporter exporter;
 
-    // Low-Pass filter
-    private double gravityX = 0.0;
-    private double gravityY = 0.0;
-    private double gravityZ = 0.0;
+    // Gravity Low-Pass filter
+    private double gravityLowPassX = 0.0;
+    private double gravityLowPassY = 0.0;
+    private double gravityLowPassZ = 0.0;
+
+    // Filtered values Low-Pass filter
+    private double filteredValueX = 0.0;
+    private double filteredValueY = 0.0;
+    private double filteredValueZ = 0.0;
+
+    // Gravity Wikipedia filter
+    private double gravityWikipediaX = 0.0;
+    private double gravityWikipediaY = 0.0;
+    private double gravityWikipediaZ = 0.0;
+
+    // High-Pass filter
+    private double gravityHighPassX = 0.0;
+    private double gravityHighPassY = 0.0;
+    private double gravityHighPassZ = 0.0;
 
     // Mean filter
     private int meanCounter;
@@ -59,41 +74,70 @@ public class LinearAcceleration {
         newSingleData.setAccY(singleData.getAccY() / Constants.EARTH_GRAVITY);
         newSingleData.setAccZ(singleData.getAccZ() / Constants.EARTH_GRAVITY);
 
-        lowPassfilter(newSingleData);
-        wikiFilter(newSingleData);
+        // lowPassFilter(newSingleData);
+        highPassFilter(newSingleData);
+        // wikiFilter(newSingleData);
     }
 
-    private void lowPassfilter(SensorSingleData singleData) {
-        gravityX = Constants.LOW_PASS_ALPHA * gravityX + (1 - Constants.LOW_PASS_ALPHA) * singleData.getAccX();
-        gravityY = Constants.LOW_PASS_ALPHA * gravityY + (1 - Constants.LOW_PASS_ALPHA) * singleData.getAccY();
-        gravityZ = Constants.LOW_PASS_ALPHA * gravityZ + (1 - Constants.LOW_PASS_ALPHA) * singleData.getAccZ();
+    // Low-Pass filter + High-Pass filter
+    private void bandPassFilter(SensorSingleData singleData) {
+        lowPassFilter(singleData);
+    }
+
+    private void highPassFilter(SensorSingleData singleData) {
+        gravityHighPassX = Constants.HIGH_PASS_ALPHA * gravityHighPassX + (1.0f - Constants.HIGH_PASS_ALPHA) * singleData
+                .getAccX();
+        gravityHighPassY = Constants.HIGH_PASS_ALPHA * gravityHighPassY + (1.0f - Constants.HIGH_PASS_ALPHA) * singleData
+                .getAccY();
+        gravityHighPassZ = Constants.HIGH_PASS_ALPHA * gravityHighPassZ + (1.0f - Constants.HIGH_PASS_ALPHA) * singleData
+                .getAccZ();
 
         // TODO move this to another method (merge with wikiFilter)
         SensorSingleData linearAcceleration = new SensorSingleData();
 
         linearAcceleration.setNumber(singleData.getNumber());
-        linearAcceleration.setAccX(singleData.getAccX() - gravityX);
-        linearAcceleration.setAccY(singleData.getAccY() - gravityY);
-        linearAcceleration.setAccZ(singleData.getAccZ() - gravityZ);
+        linearAcceleration.setAccX(singleData.getAccX() - gravityHighPassX);
+        linearAcceleration.setAccY(singleData.getAccY() - gravityHighPassY);
+        linearAcceleration.setAccZ(singleData.getAccZ() - gravityHighPassZ);
 
-        removeNoise(Constants.LINEAR_ACCELERATION_FILE_EXPORT, linearAcceleration, Constants.LOW_PASS_DELTA_ERROR);
-        // exportNewSensorData(Constants.LINEAR_ACCELERATION_FILE_EXPORT,, linearAcceleration);
+        // removeNoise(Constants.LINEAR_ACCELERATION_FILE_EXPORT, linearAcceleration, Constants.HIGH_PASS_DELTA_ERROR);
+        exportNewSensorData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, linearAcceleration);
     }
 
     private void wikiFilter(SensorSingleData singleData) {
         // y[i] = y[i] + alpha * (x[i] - y[i])
-        gravityX = gravityX + Constants.WIKIPEDIA_ALPHA * (singleData.getAccX() - gravityX);
-        gravityY = gravityY + Constants.WIKIPEDIA_ALPHA * (singleData.getAccY() - gravityY);
-        gravityZ = gravityZ + Constants.WIKIPEDIA_ALPHA * (singleData.getAccZ() - gravityZ);
+        gravityWikipediaX = gravityWikipediaX + Constants.WIKIPEDIA_ALPHA * (singleData.getAccX() - gravityWikipediaX);
+        gravityWikipediaY = gravityWikipediaY + Constants.WIKIPEDIA_ALPHA * (singleData.getAccY() - gravityWikipediaY);
+        gravityWikipediaZ = gravityWikipediaZ + Constants.WIKIPEDIA_ALPHA * (singleData.getAccZ() - gravityWikipediaZ);
 
         SensorSingleData linearAcceleration = new SensorSingleData();
 
         linearAcceleration.setNumber(singleData.getNumber());
-        linearAcceleration.setAccX(singleData.getAccX() - gravityX);
-        linearAcceleration.setAccY(singleData.getAccY() - gravityY);
-        linearAcceleration.setAccZ(singleData.getAccZ() - gravityZ);
+        linearAcceleration.setAccX(singleData.getAccX() - gravityWikipediaX);
+        linearAcceleration.setAccY(singleData.getAccY() - gravityWikipediaY);
+        linearAcceleration.setAccZ(singleData.getAccZ() - gravityWikipediaZ);
 
         removeNoise(Constants.LINEAR_ACCELERATION_FILE_EXPORT_2, linearAcceleration, Constants.LOW_PASS_DELTA_ERROR);
+    }
+
+
+    // TODO: refactor this to return singleData;
+    private void lowPassFilter(SensorSingleData singleData) {
+        filteredValueX = singleData.getAccX() * Constants.LOW_PASS_ALPHA + filteredValueX * (1.0f - Constants
+                .LOW_PASS_ALPHA);
+        filteredValueY = singleData.getAccY() * Constants.LOW_PASS_ALPHA + filteredValueY * (1.0f - Constants
+                .LOW_PASS_ALPHA);
+        filteredValueZ = singleData.getAccZ() * Constants.LOW_PASS_ALPHA + filteredValueZ * (1.0f - Constants
+                .LOW_PASS_ALPHA);
+
+
+        SensorSingleData filteredValues = new SensorSingleData();
+        filteredValues.setNumber(singleData.getNumber());
+        filteredValues.setAccX(filteredValueX);
+        filteredValues.setAccY(filteredValueY);
+        filteredValues.setAccZ(filteredValueZ);
+
+        highPassFilter(filteredValues);
     }
 
     private void removeNoise(String fileName, SensorSingleData singleData, Double deltaError) {
@@ -101,9 +145,15 @@ public class LinearAcceleration {
         double y = singleData.getAccY();
         double z = singleData.getAccZ();
 
-        if (x < deltaError && x > -deltaError) { x = 0; }
-        if (y < deltaError && y > -deltaError) { y = 0; }
-        if (z < deltaError && z > -deltaError) { z = 0; }
+        if (x < deltaError && x > -deltaError) {
+            x = 0;
+        }
+        if (y < deltaError && y > -deltaError) {
+            y = 0;
+        }
+        if (z < deltaError && z > -deltaError) {
+            z = 0;
+        }
 
         SensorSingleData sensorSingleData = new SensorSingleData();
         sensorSingleData.setNumber(singleData.getNumber());
