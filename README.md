@@ -34,7 +34,7 @@ Adjusting accuracy:
 Adjust:
 
 ```bash
-Constants.FILTER_GAIN
+constants.Constants.FILTER_GAIN
 ```
 
 to value in range [0.0 - 1.0].

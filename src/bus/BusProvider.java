@@ -1,3 +1,5 @@
+package bus;
+
 import com.google.common.eventbus.EventBus;
 
 public final class BusProvider {
