@@ -3,7 +3,7 @@ package filters;
 import constants.Constants;
 import factory.SensorSingleData;
 
-public class HighPassFilter extends Filter {
+public class HighPass extends Filter {
 
     SensorSingleData sensorSingleData;
 
@@ -11,13 +11,17 @@ public class HighPassFilter extends Filter {
     double gravityHighPassY;
     double gravityHighPassZ;
 
-    public HighPassFilter() {
+    public HighPass() {
+        initObjects();
+    }
+
+    private void initObjects() {
         gravityHighPassX = 0.0;
         gravityHighPassY = 0.0;
         gravityHighPassZ = 0.0;
     }
 
-    public SensorSingleData addNewSensorData(SensorSingleData sensorSingleData) {
+    public SensorSingleData filter(SensorSingleData sensorSingleData) {
         this.sensorSingleData = sensorSingleData;
         computeGravity();
         return extractGravity();

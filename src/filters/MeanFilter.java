@@ -4,25 +4,24 @@ import constants.Constants;
 import factory.SensorSingleData;
 
 public class MeanFilter {
-    private static final MeanFilter INSTANCE = new MeanFilter();
 
     private int meanCounter;
     private double meanX;
     private double meanY;
     private double meanZ;
 
-    private MeanFilter() {
+    public MeanFilter() {
+        initObjects();
+    }
+
+    private void initObjects() {
         meanCounter = 0;
         meanX = 0.0;
         meanY = 0.0;
         meanZ = 0.0;
     }
 
-    public static MeanFilter getInstance() {
-        return INSTANCE;
-    }
-
-    public SensorSingleData addNewSensorData(SensorSingleData sensorSingleData) {
+    public SensorSingleData filter(SensorSingleData sensorSingleData) {
 
         meanX += sensorSingleData.getAccX();
         meanY += sensorSingleData.getAccY();

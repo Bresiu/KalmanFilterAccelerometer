@@ -3,7 +3,7 @@ package filters;
 import constants.Constants;
 import factory.SensorSingleData;
 
-public class LowPassFilter {
+public class LowPass {
 
     SensorSingleData sensorSingleData;
 
@@ -11,13 +11,17 @@ public class LowPassFilter {
     double filteredValueY;
     double filteredValueZ;
 
-    public LowPassFilter() {
+    public LowPass() {
+        initObjects();
+    }
+
+    private void initObjects() {
         filteredValueX = 0.0;
         filteredValueY = 0.0;
         filteredValueZ = 0.0;
     }
 
-    public SensorSingleData addNewSensorData(SensorSingleData sensorSingleData) {
+    public SensorSingleData filter(SensorSingleData sensorSingleData) {
         this.sensorSingleData = sensorSingleData;
         filterValues();
         return makeFilteredData();

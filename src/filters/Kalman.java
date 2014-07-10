@@ -6,21 +6,34 @@ import factory.SensorSingleData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KalmanFilter {
+public class Kalman {
 
     private List<Double> noiseVariances;       // Noise variances
     private List<Double> predictedVariances;   // Predicted variances
     private List<Double> predictedValues;      // Predicted values
+
     private boolean isInitialised;
 
-    public KalmanFilter() {
+    public Kalman() {
+        initObjects();
+    }
+
+    private void initObjects() {
         noiseVariances = new ArrayList<Double>();
         predictedVariances = new ArrayList<Double>();
         predictedValues = new ArrayList<Double>();
         isInitialised = false;
     }
 
-    public void init(List<Double> initValues) {
+    private void filter(SensorSingleData singleData) {
+        List<Double> values = new ArrayList<Double>();
+        values.add(singleData.getAccX());
+        values.add(singleData.getAccY());
+        values.add(singleData.getAccZ());
+        process(values);
+    }
+
+    public SensorSingleData init(List<Double> initValues) {
         for (int i = 0; i < initValues.size(); i++) {
             noiseVariances.add(i, Constants.VARIANCE);
             predictedVariances.add(i, noiseVariances.get(i));
@@ -33,10 +46,10 @@ public class KalmanFilter {
         sensorSingleData.setAccY(initValues.get(1));
         sensorSingleData.setAccZ(initValues.get(2));
 
-        // TODO: add return here
+        return sensorSingleData;
     }
 
-    public void process(List<Double> measurementValues) {
+    public SensorSingleData process(List<Double> measurementValues) {
         if (isInitialised) {
             List<Double> correctedValues = new ArrayList<Double>();
             for (int i = 0; i < measurementValues.size(); i++) {
@@ -59,9 +72,9 @@ public class KalmanFilter {
             sensorSingleData.setAccY(correctedValues.get(1));
             sensorSingleData.setAccZ(correctedValues.get(2));
 
-            exportNewSensorData(Constants.SENSOR_FILE_EXPORT, sensorSingleData);
+            return sensorSingleData;
         } else {
-            init(measurementValues);
+            return init(measurementValues);
         }
     }
 }

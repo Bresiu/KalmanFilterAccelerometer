@@ -5,14 +5,10 @@ import factory.SensorSingleData;
 
 public class NoiseFilter {
 
-    SensorSingleData sensorSingleData;
-
-    public NoiseFilter(SensorSingleData sensorSingleData) {
-        this.sensorSingleData = sensorSingleData;
-        extractNoise();
+    public NoiseFilter() {
     }
 
-    private void extractNoise() {
+    public SensorSingleData filter(SensorSingleData sensorSingleData) {
         if (sensorSingleData.getAccX() < Constants.NOISE_DELTA_ERROR &&
                 sensorSingleData.getAccX() > -Constants.NOISE_DELTA_ERROR) {
             sensorSingleData.setAccX(0);
@@ -27,9 +23,7 @@ public class NoiseFilter {
                 sensorSingleData.getAccZ() > -Constants.NOISE_DELTA_ERROR) {
             sensorSingleData.setAccZ(0);
         }
-    }
 
-    public SensorSingleData makeFilteredData() {
         return sensorSingleData;
     }
 }

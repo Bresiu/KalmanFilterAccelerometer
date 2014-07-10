@@ -1,6 +1,8 @@
 package factory;
 
+import bus.BusProvider;
 import com.google.common.eventbus.EventBus;
+import io.Importer;
 
 import java.util.List;
 
@@ -49,15 +51,6 @@ public class SensorDataFactory {
         sensorSingleData.setAccY(Double.valueOf(sensorParts[3]));
         sensorSingleData.setAccZ(Double.valueOf(sensorParts[4]));
 
-        /*
-        sensorSingleData.setGyroX(Double.valueOf(sensorParts[5]));
-        sensorSingleData.setGyroY(Double.valueOf(sensorParts[6]));
-        sensorSingleData.setGyroZ(Double.valueOf(sensorParts[7]));
-
-        sensorSingleData.setMagnX(Double.valueOf(sensorParts[8]));
-        sensorSingleData.setMagnY(Double.valueOf(sensorParts[9]));
-        sensorSingleData.setMagnZ(Double.valueOf(sensorParts[10]));
-        */
         return sensorSingleData;
     }
 
