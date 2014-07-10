@@ -12,13 +12,13 @@ public class LinearAcceleration {
     Exporter exporter;
 
     Filter filter;
-    LowPass lowPassFilter;
-    HighPass highPassFilter;
-    WikipediaFilter wikipediaFilter;
-    BandPass bandPassFilter;
-    NoiseFilter noiseFilter;
-    MeanFilter meanFilter;
-    Kalman kalmanFilter;
+    LowPass lowPass;
+    HighPass highPass;
+    Wikipedia wikipedia;
+    BandPass bandPass;
+    Noise noise;
+    Mean mean;
+    Kalman kalman;
 
     public LinearAcceleration() {
         initObjects();
@@ -27,9 +27,14 @@ public class LinearAcceleration {
 
     private void initObjects() {
         exporter = new Exporter();
-        bandPassFilter = new BandPass();
-        noiseFilter = new NoiseFilter();
-        meanFilter = new MeanFilter();
+        lowPass = new LowPass();
+        highPass = new HighPass();
+        wikipedia = new Wikipedia();
+        bandPass = new BandPass();
+        noise = new Noise();
+        mean = new Mean();
+        kalman = new Kalman();
+
     }
 
     @Subscribe
@@ -38,15 +43,22 @@ public class LinearAcceleration {
     }
 
     private void filter(SensorSingleData sensorSingleData) {
-        sensorSingleData = bandPassFilter.filter(sensorSingleData);
-        sensorSingleData = noiseFilter.filter(sensorSingleData);
+        // sensorSingleData = kalman.filter(sensorSingleData);
+        // sensorSingleData = bandPass.filter(sensorSingleData);
+        // sensorSingleData = lowPass.filter(sensorSingleData);
+        // sensorSingleData = highPass.filter(sensorSingleData);
+        // sensorSingleData = wikipedia.filter(sensorSingleData);
+        // sensorSingleData = noise.filter(sensorSingleData);
 
-        SensorSingleData meanSingleData = meanFilter.filter(sensorSingleData);
+        ///*
+        SensorSingleData meanSingleData = mean.filter(sensorSingleData);
         if (meanSingleData != null) {
-            sensorSingleData = meanSingleData;
+            meanSingleData = lowPass.filter(meanSingleData);
+            exportNewSensorData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, meanSingleData);
         }
+        //*/
 
-        exportNewSensorData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, sensorSingleData);
+
     }
 
     private void registerBus() {

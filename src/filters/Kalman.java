@@ -13,6 +13,7 @@ public class Kalman {
     private List<Double> predictedValues;      // Predicted values
 
     private boolean isInitialised;
+    private SensorSingleData sensorSingleData;
 
     public Kalman() {
         initObjects();
@@ -25,15 +26,16 @@ public class Kalman {
         isInitialised = false;
     }
 
-    private void filter(SensorSingleData singleData) {
+    public SensorSingleData filter(SensorSingleData sensorSingleData) {
+        this.sensorSingleData = sensorSingleData;
         List<Double> values = new ArrayList<Double>();
-        values.add(singleData.getAccX());
-        values.add(singleData.getAccY());
-        values.add(singleData.getAccZ());
-        process(values);
+        values.add(sensorSingleData.getAccX());
+        values.add(sensorSingleData.getAccY());
+        values.add(sensorSingleData.getAccZ());
+        return process(values);
     }
 
-    public SensorSingleData init(List<Double> initValues) {
+    private SensorSingleData init(List<Double> initValues) {
         for (int i = 0; i < initValues.size(); i++) {
             noiseVariances.add(i, Constants.VARIANCE);
             predictedVariances.add(i, noiseVariances.get(i));
@@ -41,7 +43,6 @@ public class Kalman {
         }
         isInitialised = true;
 
-        SensorSingleData sensorSingleData = new SensorSingleData();
         sensorSingleData.setAccX(initValues.get(0));
         sensorSingleData.setAccY(initValues.get(1));
         sensorSingleData.setAccZ(initValues.get(2));
@@ -49,7 +50,7 @@ public class Kalman {
         return sensorSingleData;
     }
 
-    public SensorSingleData process(List<Double> measurementValues) {
+    private SensorSingleData process(List<Double> measurementValues) {
         if (isInitialised) {
             List<Double> correctedValues = new ArrayList<Double>();
             for (int i = 0; i < measurementValues.size(); i++) {
@@ -67,7 +68,6 @@ public class Kalman {
                 correctedValues.add(i, correctedValue);
             }
 
-            SensorSingleData sensorSingleData = new SensorSingleData();
             sensorSingleData.setAccX(correctedValues.get(0));
             sensorSingleData.setAccY(correctedValues.get(1));
             sensorSingleData.setAccZ(correctedValues.get(2));

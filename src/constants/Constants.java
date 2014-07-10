@@ -5,19 +5,19 @@ public class Constants {
     public static final double EARTH_GRAVITY = 9.80665;
 
     // Low-Pass Filter
-    public static final float LOW_PASS_ALPHA = 0.2f;
+    public static final float LOW_PASS_ALPHA = 0.1f;
 
     // High-Pass Filter
-    public static final float HIGH_PASS_ALPHA = 0.8f;
+    public static final float HIGH_PASS_ALPHA = 0.9f;
 
     // Wikipedia filter
     public static final float WIKIPEDIA_ALPHA = 0.15f;
 
     // Mean Filter
-    public static final int MEAN_FILTER_WINDOW = 5;
+    public static final int MEAN_FILTER_WINDOW = 20;
 
     // Noise delta error
-    public static final double NOISE_DELTA_ERROR = 0.04;
+    public static final double NOISE_DELTA_ERROR = 0.2;
 
     // Kalman Filter
     public static final double VARIANCE = 0.05;

@@ -3,9 +3,9 @@ package filters;
 import constants.Constants;
 import factory.SensorSingleData;
 
-public class NoiseFilter {
+public class Noise {
 
-    public NoiseFilter() {
+    public Noise() {
     }
 
     public SensorSingleData filter(SensorSingleData sensorSingleData) {

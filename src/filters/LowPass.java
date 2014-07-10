@@ -40,6 +40,7 @@ public class LowPass {
         sensorSingleData.setAccX(filteredValueX);
         sensorSingleData.setAccY(filteredValueY);
         sensorSingleData.setAccZ(filteredValueZ);
+
         return sensorSingleData;
     }
 }

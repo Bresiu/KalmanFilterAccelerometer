@@ -3,7 +3,7 @@ package filters;
 import constants.Constants;
 import factory.SensorSingleData;
 
-public class WikipediaFilter extends Filter {
+public class Wikipedia extends Filter {
 
     SensorSingleData sensorSingleData;
 
@@ -11,13 +11,17 @@ public class WikipediaFilter extends Filter {
     double gravityWikipediaY;
     double gravityWikipediaZ;
 
-    public WikipediaFilter(SensorSingleData sensorSingleData) {
+    public Wikipedia() {
+        initObjects();
+    }
+
+    private void initObjects() {
         gravityWikipediaX = 0.0;
         gravityWikipediaY = 0.0;
         gravityWikipediaZ = 0.0;
     }
 
-    public SensorSingleData addNewSensorData(SensorSingleData sensorSingleData) {
+    public SensorSingleData filter(SensorSingleData sensorSingleData) {
         this.sensorSingleData = sensorSingleData;
         computeGravity();
         return extractGravity();

@@ -3,14 +3,14 @@ package filters;
 import constants.Constants;
 import factory.SensorSingleData;
 
-public class MeanFilter {
+public class Mean {
 
     private int meanCounter;
     private double meanX;
     private double meanY;
     private double meanZ;
 
-    public MeanFilter() {
+    public Mean() {
         initObjects();
     }
 
@@ -22,11 +22,9 @@ public class MeanFilter {
     }
 
     public SensorSingleData filter(SensorSingleData sensorSingleData) {
-
         meanX += sensorSingleData.getAccX();
         meanY += sensorSingleData.getAccY();
         meanZ += sensorSingleData.getAccZ();
-
         meanCounter++;
 
         return checkFilterWindow(sensorSingleData);
@@ -34,7 +32,6 @@ public class MeanFilter {
 
     private SensorSingleData checkFilterWindow(SensorSingleData sensorSingleData) {
         if (meanCounter == Constants.MEAN_FILTER_WINDOW) {
-
             meanX /= Constants.MEAN_FILTER_WINDOW;
             meanY /= Constants.MEAN_FILTER_WINDOW;
             meanZ /= Constants.MEAN_FILTER_WINDOW;
