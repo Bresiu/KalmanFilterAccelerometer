@@ -2,8 +2,8 @@ package constants;
 
 public class Constants {
     // Complementary Filter
-    // public static final float FILTER_COEFFICIENT = 0.98f;
-    public static final float FILTER_COEFFICIENT = 0.5f;
+    public static final float FILTER_COEFFICIENT = 0.98f;
+    // public static final float FILTER_COEFFICIENT = 0.5f;
     public static final float EPSILON = 0.000000001f;
 
     // Gravity Filter
@@ -33,7 +33,8 @@ public class Constants {
     public static final double KALMAN_DELTA_ERROR = 1.0;
 
     // Filenames
-    public static final String SENSOR_FILE_IMPORT = "log.dat";
-    // public static final String SENSOR_FILE_IMPORT = "accGravCar.dat";
+    // public static final String SENSOR_FILE_IMPORT = "log.dat";
+    public static final String SENSOR_FILE_IMPORT = "accGravCar.dat";
     public static final String LINEAR_ACCELERATION_FILE_EXPORT = "linear_acceleration.dat";
+    // public static final String LINEAR_ACCELERATION_FILE_EXPORT = "linear_acceleration2.dat";
 }

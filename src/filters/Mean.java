@@ -6,9 +6,18 @@ import factory.SensorSingleData;
 public class Mean {
 
     private int meanCounter;
-    private double meanX;
-    private double meanY;
-    private double meanZ;
+
+    private double meanAccX;
+    private double meanAccY;
+    private double meanAccZ;
+
+    private double meanGyroX;
+    private double meanGyroY;
+    private double meanGyroZ;
+
+    private double meanMagnX;
+    private double meanMagnY;
+    private double meanMagnZ;
 
     public Mean() {
         initObjects();
@@ -16,15 +25,33 @@ public class Mean {
 
     private void initObjects() {
         meanCounter = 0;
-        meanX = 0.0;
-        meanY = 0.0;
-        meanZ = 0.0;
+
+        meanAccX = 0.0;
+        meanAccY = 0.0;
+        meanAccZ = 0.0;
+
+        meanGyroX = 0.0;
+        meanGyroY = 0.0;
+        meanGyroZ = 0.0;
+
+        meanMagnX = 0.0;
+        meanMagnY = 0.0;
+        meanMagnZ = 0.0;
     }
 
     public SensorSingleData filter(SensorSingleData sensorSingleData) {
-        meanX += sensorSingleData.getAccX();
-        meanY += sensorSingleData.getAccY();
-        meanZ += sensorSingleData.getAccZ();
+        meanAccX += sensorSingleData.getAccX();
+        meanAccY += sensorSingleData.getAccY();
+        meanAccZ += sensorSingleData.getAccZ();
+
+        meanGyroX += sensorSingleData.getGyroX();
+        meanGyroY += sensorSingleData.getGyroY();
+        meanGyroZ += sensorSingleData.getGyroZ();
+
+        meanMagnX += sensorSingleData.getMagnX();
+        meanMagnY += sensorSingleData.getMagnY();
+        meanMagnZ += sensorSingleData.getMagnZ();
+
         meanCounter++;
 
         return checkFilterWindow(sensorSingleData);
@@ -32,18 +59,44 @@ public class Mean {
 
     private SensorSingleData checkFilterWindow(SensorSingleData sensorSingleData) {
         if (meanCounter == Constants.MEAN_FILTER_WINDOW) {
-            meanX /= Constants.MEAN_FILTER_WINDOW;
-            meanY /= Constants.MEAN_FILTER_WINDOW;
-            meanZ /= Constants.MEAN_FILTER_WINDOW;
 
-            sensorSingleData.setAccX(meanX);
-            sensorSingleData.setAccY(meanY);
-            sensorSingleData.setAccZ(meanZ);
+            meanAccX /= Constants.MEAN_FILTER_WINDOW;
+            meanAccY /= Constants.MEAN_FILTER_WINDOW;
+            meanAccZ /= Constants.MEAN_FILTER_WINDOW;
+
+            meanGyroX /= Constants.MEAN_FILTER_WINDOW;
+            meanGyroY /= Constants.MEAN_FILTER_WINDOW;
+            meanGyroZ /= Constants.MEAN_FILTER_WINDOW;
+
+            meanMagnX /= Constants.MEAN_FILTER_WINDOW;
+            meanMagnY /= Constants.MEAN_FILTER_WINDOW;
+            meanMagnZ /= Constants.MEAN_FILTER_WINDOW;
+
+            sensorSingleData.setAccX(meanAccX);
+            sensorSingleData.setAccY(meanAccY);
+            sensorSingleData.setAccZ(meanAccZ);
+
+            sensorSingleData.setGyroX(meanGyroX);
+            sensorSingleData.setGyroY(meanGyroY);
+            sensorSingleData.setGyroZ(meanGyroZ);
+
+            sensorSingleData.setMagnX(meanMagnX);
+            sensorSingleData.setMagnY(meanMagnY);
+            sensorSingleData.setMagnZ(meanMagnZ);
 
             meanCounter = 0;
-            meanX = 0;
-            meanY = 0;
-            meanZ = 0;
+
+            meanAccX = 0.0;
+            meanAccY = 0.0;
+            meanAccZ = 0.0;
+
+            meanGyroX = 0.0;
+            meanGyroY = 0.0;
+            meanGyroZ = 0.0;
+
+            meanMagnX = 0.0;
+            meanMagnY = 0.0;
+            meanMagnZ = 0.0;
 
             return sensorSingleData;
         }

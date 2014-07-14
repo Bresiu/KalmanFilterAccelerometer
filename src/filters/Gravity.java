@@ -31,9 +31,9 @@ public class Gravity {
         } else {
             double dT = now - mAccTime;
             setSamplingPeriod(dT);
-            x = mX(accelerometer[0]);
-            y = mY(accelerometer[1]);
-            z = mZ(accelerometer[2]);
+            x = 0; // mX(accelerometer[0]);
+            y = 0; // mY(accelerometer[1]);
+            z = 0; // mZ(accelerometer[2]);
         }
         mAccTime = now;
 

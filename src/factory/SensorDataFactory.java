@@ -2,8 +2,8 @@ package factory;
 
 import bus.BusProvider;
 import com.google.common.eventbus.EventBus;
+import filters.Mean;
 import io.Importer;
-import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -11,14 +11,16 @@ public class SensorDataFactory {
 
     private List<String> sensorDataLines;
     private EventBus bus;
+    private Mean mean;
 
-    private long timestamp;
+    // private long timestamp;
 
     private final long SLEEP_TIME = 10;
 
     public SensorDataFactory() {
-        DateTime dateTime = new DateTime();
-        timestamp = dateTime.getMillis();
+        // DateTime dateTime = new DateTime();
+        // timestamp = dateTime.getMillis();
+        mean = new Mean();
         Importer importer = new Importer();
         sensorDataLines = importer.readData();
         registerBus();
@@ -34,10 +36,14 @@ public class SensorDataFactory {
             public void run() {
                 for (String string : sensorDataLines) {
                     SensorSingleData sensorSingleData = proccessLine(string);
-                    bus.post(sensorSingleData);
-
+                    SensorSingleData sensorMeanData = mean.filter(sensorSingleData);
+                    if (sensorMeanData != null) {
+                        sensorMeanData.setNumber(sensorSingleData.getNumber());
+                        sensorMeanData.setTimestamp(sensorSingleData.getTimestamp());
+                        bus.post(sensorMeanData);
+                    }
                     // Simulate GPS intervals
-                    pauseThread(SLEEP_TIME);
+                    // pauseThread(SLEEP_TIME);
                 }
             }
         };
@@ -50,7 +56,7 @@ public class SensorDataFactory {
         SensorSingleData sensorSingleData = new SensorSingleData();
 
         sensorSingleData.setNumber(Long.valueOf(sensorParts[0]));
-        sensorSingleData.setTimestamp(timestamp + Long.valueOf(sensorParts[1]));
+        sensorSingleData.setTimestamp(Long.valueOf(sensorParts[1]));
 
         sensorSingleData.setAccX(Double.valueOf(sensorParts[2]));
         sensorSingleData.setAccY(Double.valueOf(sensorParts[3]));
