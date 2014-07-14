@@ -11,7 +11,6 @@ import io.Exporter;
 public class LinearAcceleration {
     Exporter exporter;
 
-    Filter filter;
     LowPass lowPass;
     HighPass highPass;
     Wikipedia wikipedia;

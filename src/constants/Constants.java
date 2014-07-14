@@ -1,6 +1,14 @@
 package constants;
 
 public class Constants {
+    // Complementary Filter
+    // public static final float FILTER_COEFFICIENT = 0.98f;
+    public static final float FILTER_COEFFICIENT = 0.5f;
+    public static final float EPSILON = 0.000000001f;
+
+    // Gravity Filter
+    public static final float NS2S = 1.0f / 1000000000.0f;
+
     // Gravity Force
     public static final double EARTH_GRAVITY = 9.80665;
 
@@ -14,7 +22,7 @@ public class Constants {
     public static final float WIKIPEDIA_ALPHA = 0.15f;
 
     // Mean Filter
-    public static final int MEAN_FILTER_WINDOW = 20;
+    public static final int MEAN_FILTER_WINDOW = 10;
 
     // Noise delta error
     public static final double NOISE_DELTA_ERROR = 0.2;
@@ -25,7 +33,7 @@ public class Constants {
     public static final double KALMAN_DELTA_ERROR = 1.0;
 
     // Filenames
-    // public static final String SENSOR_FILE_IMPORT = "log.dat";
-    public static final String SENSOR_FILE_IMPORT = "accGravCar.dat";
+    public static final String SENSOR_FILE_IMPORT = "log.dat";
+    // public static final String SENSOR_FILE_IMPORT = "accGravCar.dat";
     public static final String LINEAR_ACCELERATION_FILE_EXPORT = "linear_acceleration.dat";
 }

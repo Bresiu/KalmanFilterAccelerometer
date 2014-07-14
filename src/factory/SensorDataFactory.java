@@ -3,6 +3,7 @@ package factory;
 import bus.BusProvider;
 import com.google.common.eventbus.EventBus;
 import io.Importer;
+import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -11,9 +12,13 @@ public class SensorDataFactory {
     private List<String> sensorDataLines;
     private EventBus bus;
 
-    private final long SLEEP_TIME = 1000;
+    private long timestamp;
+
+    private final long SLEEP_TIME = 10;
 
     public SensorDataFactory() {
+        DateTime dateTime = new DateTime();
+        timestamp = dateTime.getMillis();
         Importer importer = new Importer();
         sensorDataLines = importer.readData();
         registerBus();
@@ -32,7 +37,7 @@ public class SensorDataFactory {
                     bus.post(sensorSingleData);
 
                     // Simulate GPS intervals
-                    // pauseThread(SLEEP_TIME);
+                    pauseThread(SLEEP_TIME);
                 }
             }
         };
@@ -45,11 +50,19 @@ public class SensorDataFactory {
         SensorSingleData sensorSingleData = new SensorSingleData();
 
         sensorSingleData.setNumber(Long.valueOf(sensorParts[0]));
-        sensorSingleData.setDt(Long.valueOf(sensorParts[1]));
+        sensorSingleData.setTimestamp(timestamp + Long.valueOf(sensorParts[1]));
 
         sensorSingleData.setAccX(Double.valueOf(sensorParts[2]));
         sensorSingleData.setAccY(Double.valueOf(sensorParts[3]));
         sensorSingleData.setAccZ(Double.valueOf(sensorParts[4]));
+
+        sensorSingleData.setGyroX(Double.valueOf(sensorParts[5]));
+        sensorSingleData.setGyroY(Double.valueOf(sensorParts[6]));
+        sensorSingleData.setGyroZ(Double.valueOf(sensorParts[7]));
+
+        sensorSingleData.setMagnX(Double.valueOf(sensorParts[8]));
+        sensorSingleData.setMagnY(Double.valueOf(sensorParts[9]));
+        sensorSingleData.setMagnZ(Double.valueOf(sensorParts[10]));
 
         return sensorSingleData;
     }
