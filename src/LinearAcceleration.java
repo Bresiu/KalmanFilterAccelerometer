@@ -18,6 +18,8 @@ public class LinearAcceleration {
     Noise noise;
     Mean mean;
     Kalman kalman;
+    ButterWorth butterWorth;
+    Complementary complementary;
 
     public LinearAcceleration() {
         initObjects();
@@ -33,7 +35,8 @@ public class LinearAcceleration {
         noise = new Noise();
         mean = new Mean();
         kalman = new Kalman();
-
+        butterWorth = new ButterWorth();
+        complementary = new Complementary();
     }
 
     @Subscribe
@@ -49,15 +52,18 @@ public class LinearAcceleration {
         // sensorSingleData = wikipedia.filter(sensorSingleData);
         // sensorSingleData = noise.filter(sensorSingleData);
 
-        ///*
+        /*
         SensorSingleData meanSingleData = mean.filter(sensorSingleData);
         if (meanSingleData != null) {
             meanSingleData = lowPass.filter(meanSingleData);
             exportNewSensorData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, meanSingleData);
         }
-        //*/
+        */
+        // sensorSingleData = butterWorth.filter(sensorSingleData);
 
+        complementary.startProcess(sensorSingleData);
 
+        exportNewSensorData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, sensorSingleData);
     }
 
     private void registerBus() {

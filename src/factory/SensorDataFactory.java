@@ -13,10 +13,6 @@ public class SensorDataFactory {
     private EventBus bus;
     private Mean mean;
 
-    // private long timestamp;
-
-    private final long SLEEP_TIME = 10;
-
     public SensorDataFactory() {
         // DateTime dateTime = new DateTime();
         // timestamp = dateTime.getMillis();
@@ -36,14 +32,15 @@ public class SensorDataFactory {
             public void run() {
                 for (String string : sensorDataLines) {
                     SensorSingleData sensorSingleData = proccessLine(string);
-                    SensorSingleData sensorMeanData = mean.filter(sensorSingleData);
-                    if (sensorMeanData != null) {
-                        sensorMeanData.setNumber(sensorSingleData.getNumber());
-                        sensorMeanData.setTimestamp(sensorSingleData.getTimestamp());
-                        bus.post(sensorMeanData);
-                    }
+                    bus.post(sensorSingleData);
+                    //SensorSingleData sensorMeanData = mean.filter(sensorSingleData);
+                    //if (sensorMeanData != null) {
+                    //    sensorMeanData.setNumber(sensorSingleData.getNumber());
+                    //    sensorMeanData.setTimestamp(sensorSingleData.getTimestamp());
+                    //    bus.post(sensorMeanData);
+                    //}
                     // Simulate GPS intervals
-                    // pauseThread(SLEEP_TIME);
+                    // pauseThread(Constants.SLEEP_TIME);
                 }
             }
         };

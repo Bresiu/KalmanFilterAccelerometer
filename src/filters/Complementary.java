@@ -1,10 +1,7 @@
 package filters;
 
-import bus.BusProvider;
-import com.google.common.eventbus.Subscribe;
 import constants.Constants;
 import factory.SensorSingleData;
-import io.Exporter;
 
 public class Complementary {
     // Nano-second to second conversion
@@ -18,7 +15,7 @@ public class Complementary {
 
     private float[] components = new float[3]; // The gravity components of the acceleration signal.
     private float[] linearAcceleration = new float[]{0, 0, 0};
-    // TODO private float[] gravity = new float[]{0, 0, 0};
+    // private float[] gravity = new float[]{0, 0, 0};
     private float[] gyroMatrix = new float[9]; // rotation matrix from gyro data
     private float[] gyroOrientation = new float[3]; // orientation angles from gyro matrix
     private float[] orientation = new float[3]; // orientation angles from accel and magnet
@@ -33,17 +30,15 @@ public class Complementary {
     private long timeStamp;
     private boolean initState = false;
 
-    private Exporter exporter;
-    private SensorSingleData singleData;
+    private ButterWorth butterWorth;
 
-    /**
-     * Initialize a singleton instance.
-     * gravitySubject the gravity subject.
-     * gyroscopeSubject the gyroscope subject.
-     * magneticSubject the magnetic subject.
-     */
+    private SensorSingleData sensorSingleData;
+
     public Complementary() {
+        initObjects();
+    }
 
+    private void initObjects() {
         gyroOrientation[0] = 0.0f;
         gyroOrientation[1] = 0.0f;
         gyroOrientation[2] = 0.0f;
@@ -59,37 +54,34 @@ public class Complementary {
         gyroMatrix[7] = 0.0f;
         gyroMatrix[8] = 1.0f;
 
-        exporter = new Exporter();
-        registerBus();
+        // butterWorth = new ButterWorth();
     }
 
-    private void registerBus() {
-        BusProvider.getInstance().register(this);
-    }
-
-    @Subscribe
-    public void onSensorUpdate(SensorSingleData singleData) {
-        startProcess(singleData);
-    }
-
-    private void startProcess(SensorSingleData sensorSingleData) {
-        singleData = sensorSingleData;
-        timeStamp = singleData.getTimestamp();
+    public SensorSingleData startProcess(SensorSingleData sensorSingleData) {
+        this.sensorSingleData = sensorSingleData;
+        timeStamp = sensorSingleData.getTimestamp();
 
         // TODO: MEAN FILTER THIS
-        acceleration = new float[]{(float) singleData.getAccX(), (float) singleData.getAccY(),
-                (float) singleData.getAccZ()};
-        magnetic = new float[]{(float) singleData.getMagnX(), (float) singleData.getMagnY(),
-                (float) singleData.getMagnZ()};
-        gyroscope = new float[]{(float) singleData.getGyroX(), (float) singleData.getGyroY(),
-                (float) singleData.getGyroZ()};
+        acceleration = new float[]{(float) sensorSingleData.getAccX(), (float) sensorSingleData.getAccY(),
+                (float) sensorSingleData.getAccZ()};
+        magnetic = new float[]{(float) sensorSingleData.getMagnX(), (float) sensorSingleData.getMagnY(),
+                (float) sensorSingleData.getMagnZ()};
+        gyroscope = new float[]{(float) sensorSingleData.getGyroX(), (float) sensorSingleData.getGyroY(),
+                (float) sensorSingleData.getGyroZ()};
+
+        // sensorSingleData = butterWorth.filter(sensorSingleData);
+
+        // gravity = new float[]{(float) sensorSingleData.getAccX(), (float) sensorSingleData.getAccY(),
+        //       (float) sensorSingleData.getAccZ()};
 
         calculateOrientation();
         calculateGyro(sensorSingleData.getTimestamp());
+        calculateFusedOrientation();
+        calculateLinearAcceleration();
+        return portToSingleData();
     }
 
     // Calculates orientation angles from accelerometer and magnetometer output.
-    // TODO: change acc to gravity via butterworth
     private void calculateOrientation() {
         if (getRotationMatrix(rotationMatrix, null, acceleration, magnetic)) {
             getOrientation(rotationMatrix, orientation);
@@ -97,7 +89,6 @@ public class Complementary {
         }
     }
 
-    // TODO: change accelerometer to gravity via BUTTERWORTH FILTER
     private static boolean getRotationMatrix(float[] R, float[] I, float[] gravity, float[] geomagnetic) {
         float Ax = gravity[0];
         float Ay = gravity[1];
@@ -245,8 +236,6 @@ public class Complementary {
         // Get the gyroscope based orientation from the composite rotation matrix. This orientation will be fused via
         // complementary filter with the orientation from the acceleration sensor and magnetic sensor.
         getOrientation(gyroMatrix, gyroOrientation);
-
-        calculateFusedOrientation();
     }
 
     //  Multiply A by B
@@ -405,8 +394,6 @@ public class Complementary {
         gyroMatrix = getRotationMatrixFromOrientation(fusedOrientation);
 
         System.arraycopy(fusedOrientation, 0, gyroOrientation, 0, 3);
-
-        calculateLinearAcceleration();
     }
 
     /*
@@ -465,8 +452,7 @@ public class Complementary {
         zM[7] = 0.0f;
         zM[8] = 1.0f;
 
-        // Build the composite rotation... rotation order is y, x, z (roll,
-        // pitch, azimuth)
+        // Build the composite rotation... rotation order is y, x, z (roll, pitch, azimuth)
         float[] resultMatrix = matrixMultiplication(xM, yM);
         resultMatrix = matrixMultiplication(zM, resultMatrix);
         return resultMatrix;
@@ -490,24 +476,18 @@ public class Complementary {
         components[2] = (float) (Constants.EARTH_GRAVITY * Math.cos(absoluteFrameOrientation[1]) * Math.cos
                 (absoluteFrameOrientation[2]));
 
-        // Subtract the gravity component of the signal
-        // from the input acceleration signal to get the
-        // tilt compensated output.
+        // Subtract the gravity component of the signal from the input acceleration signal to get the tilt
+        // compensated output.
         linearAcceleration[0] = (this.acceleration[0] - components[0]);
         linearAcceleration[1] = (this.acceleration[1] - components[1]);
         linearAcceleration[2] = (this.acceleration[2] - components[2]);
-
-        portToSingleData();
     }
 
-    private void portToSingleData() {
-        singleData.setAccX(linearAcceleration[0]);
-        singleData.setAccY(linearAcceleration[1]);
-        singleData.setAccZ(linearAcceleration[2]);
-        exportNewSensorData(singleData);
-    }
+    private SensorSingleData portToSingleData() {
+        sensorSingleData.setAccX(linearAcceleration[0]);
+        sensorSingleData.setAccY(linearAcceleration[1]);
+        sensorSingleData.setAccZ(linearAcceleration[2]);
 
-    private void exportNewSensorData(SensorSingleData newSensorData) {
-        exporter.writeData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, newSensorData.toString());
+        return sensorSingleData;
     }
 }

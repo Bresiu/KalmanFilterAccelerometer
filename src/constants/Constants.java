@@ -1,12 +1,16 @@
 package constants;
 
 public class Constants {
+    // Import delay in ms
+    public static final long SLEEP_TIME = 10;
+
     // Complementary Filter
     public static final float FILTER_COEFFICIENT = 0.98f;
+
     // public static final float FILTER_COEFFICIENT = 0.5f;
     public static final float EPSILON = 0.000000001f;
 
-    // Gravity Filter
+    // Nanosecond to second
     public static final float NS2S = 1.0f / 1000000000.0f;
 
     // Gravity Force
@@ -34,7 +38,7 @@ public class Constants {
 
     // Filenames
     // public static final String SENSOR_FILE_IMPORT = "log.dat";
-    public static final String SENSOR_FILE_IMPORT = "accGravCar.dat";
+    // public static final String SENSOR_FILE_IMPORT = "accGravCar.dat";
+    public static final String SENSOR_FILE_IMPORT = "accGrav.dat";
     public static final String LINEAR_ACCELERATION_FILE_EXPORT = "linear_acceleration.dat";
-    // public static final String LINEAR_ACCELERATION_FILE_EXPORT = "linear_acceleration2.dat";
 }

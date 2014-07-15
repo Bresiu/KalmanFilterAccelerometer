@@ -5,6 +5,8 @@ import factory.SensorSingleData;
 
 public class Mean {
 
+    private long counter;
+
     private int meanCounter;
 
     private double meanAccX;
@@ -20,6 +22,7 @@ public class Mean {
     private double meanMagnZ;
 
     public Mean() {
+        counter = 0;
         initObjects();
     }
 
@@ -84,19 +87,10 @@ public class Mean {
             sensorSingleData.setMagnY(meanMagnY);
             sensorSingleData.setMagnZ(meanMagnZ);
 
-            meanCounter = 0;
+            sensorSingleData.setNumber(counter);
+            counter++;
 
-            meanAccX = 0.0;
-            meanAccY = 0.0;
-            meanAccZ = 0.0;
-
-            meanGyroX = 0.0;
-            meanGyroY = 0.0;
-            meanGyroZ = 0.0;
-
-            meanMagnX = 0.0;
-            meanMagnY = 0.0;
-            meanMagnZ = 0.0;
+            initObjects();
 
             return sensorSingleData;
         }
