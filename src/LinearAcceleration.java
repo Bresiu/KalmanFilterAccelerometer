@@ -63,8 +63,8 @@ public class LinearAcceleration {
         SensorSingleData meanSingleData = finalMean.filter(sensorSingleData);
         if (meanSingleData != null) {
             ResultantVector resultantVector = new ResultantVector(meanSingleData);
-            exportNewData(Constants.MAGNITUDE_ACCELERATION_FILE_EXPORT, resultantVector.toString());
-            exportNewData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, meanSingleData.toString());
+            exportNewData(Constants.MAGNITUDE_ACCELERATION, resultantVector.toString());
+            exportNewData(Constants.LINEAR_ACCELERATION, meanSingleData.toString());
         }
     }
 

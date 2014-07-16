@@ -17,8 +17,6 @@ public class ResultantVector {
         this.accX = sensorSingleData.getAccX();
         this.accY = sensorSingleData.getAccY();
         this.accZ = sensorSingleData.getAccZ();
-
-        computeLength();
     }
 
     private void computeLength() {
@@ -27,6 +25,7 @@ public class ResultantVector {
 
     @Override
     public String toString() {
+        computeLength();
         return number + " " + timestamp + " " + vectorLength;
     }
 }

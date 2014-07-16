@@ -7,14 +7,16 @@ import io.Importer;
 
 import java.util.List;
 
-public class SensorDataFactory {
+public class AccelerationGPSDataFactory {
 
-    private List<String> sensorDataLines;
+    private List<String> AccDataLines;
+    private List<String> GPSDataLines;
     private EventBus bus;
 
-    public SensorDataFactory() {
+    public AccelerationGPSDataFactory() {
         Importer importer = new Importer();
-        sensorDataLines = importer.readData(Constants.SENSOR_FILE);
+        AccDataLines = importer.readData(Constants.MAGNITUDE_ACCELERATION);
+        GPSDataLines = importer.readData(Constants.GPS_DATA);
         registerBus();
         startFactory();
     }
@@ -26,7 +28,7 @@ public class SensorDataFactory {
     private void startFactory() {
         Thread thread = new Thread() {
             public void run() {
-                for (String string : sensorDataLines) {
+                for (String string : AccDataLines) {
                     SensorSingleData sensorSingleData = proccessLine(string);
                     bus.post(sensorSingleData);
 

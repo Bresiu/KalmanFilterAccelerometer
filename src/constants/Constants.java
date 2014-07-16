@@ -28,6 +28,7 @@ public class Constants {
     // Wikipedia filter
     public static final float WIKIPEDIA_ALPHA = 0.15f;
 
+    // TODO
     // Mean Filter
     public static final int MEAN_FILTER_WINDOW = 10;
     public static final int FINAL_MEAN_FILTER_WINDOW = 20;
@@ -40,9 +41,10 @@ public class Constants {
     public static final double FILTER_GAIN = 0.8;
 
     // Filenames
-    // public static final String SENSOR_FILE_IMPORT = "log.dat";
-    public static final String SENSOR_FILE_IMPORT = "accGravCar.dat";
-    // public static final String SENSOR_FILE_IMPORT = "accGrav.dat";
-    public static final String LINEAR_ACCELERATION_FILE_EXPORT = "linear_acceleration.dat";
-    public static final String MAGNITUDE_ACCELERATION_FILE_EXPORT = "magnitude_acceleration.dat";
+    // public static final String SENSOR_FILE = "log.dat";
+    public static final String SENSOR_FILE = "accGravCar.dat";
+    // public static final String SENSOR_FILE = "accGrav.dat";
+    public static final String LINEAR_ACCELERATION = "linear_acceleration.dat";
+    public static final String MAGNITUDE_ACCELERATION = "magnitude_acceleration.dat";
+    public static final String GPS_DATA = "gps_data.dat";
 }
