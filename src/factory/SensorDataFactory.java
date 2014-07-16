@@ -2,7 +2,6 @@ package factory;
 
 import bus.BusProvider;
 import com.google.common.eventbus.EventBus;
-import filters.Mean;
 import io.Importer;
 
 import java.util.List;
@@ -11,12 +10,8 @@ public class SensorDataFactory {
 
     private List<String> sensorDataLines;
     private EventBus bus;
-    private Mean mean;
 
     public SensorDataFactory() {
-        // DateTime dateTime = new DateTime();
-        // timestamp = dateTime.getMillis();
-        mean = new Mean();
         Importer importer = new Importer();
         sensorDataLines = importer.readData();
         registerBus();
@@ -33,12 +28,7 @@ public class SensorDataFactory {
                 for (String string : sensorDataLines) {
                     SensorSingleData sensorSingleData = proccessLine(string);
                     bus.post(sensorSingleData);
-                    //SensorSingleData sensorMeanData = mean.filter(sensorSingleData);
-                    //if (sensorMeanData != null) {
-                    //    sensorMeanData.setNumber(sensorSingleData.getNumber());
-                    //    sensorMeanData.setTimestamp(sensorSingleData.getTimestamp());
-                    //    bus.post(sensorMeanData);
-                    //}
+
                     // Simulate GPS intervals
                     // pauseThread(Constants.SLEEP_TIME);
                 }

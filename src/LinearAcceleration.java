@@ -1,12 +1,10 @@
 import bus.BusProvider;
 import com.google.common.eventbus.Subscribe;
 import constants.Constants;
+import factory.ResultantVector;
 import factory.SensorSingleData;
 import filters.*;
 import io.Exporter;
-
-// TODO: alpha in Low-Pass filter as: t / (t + dT), where t, the low-pass filter's time-constant
-// TODO: and dT, the event delivery rate
 
 public class LinearAcceleration {
     Exporter exporter;
@@ -17,6 +15,7 @@ public class LinearAcceleration {
     BandPass bandPass;
     Noise noise;
     Mean mean;
+    Mean finalMean;
     Kalman kalman;
     ButterWorth butterWorth;
     Complementary complementary;
@@ -34,6 +33,7 @@ public class LinearAcceleration {
         bandPass = new BandPass();
         noise = new Noise();
         mean = new Mean();
+        finalMean = new Mean();
         kalman = new Kalman();
         butterWorth = new ButterWorth();
         complementary = new Complementary();
@@ -52,25 +52,27 @@ public class LinearAcceleration {
         // sensorSingleData = wikipedia.filter(sensorSingleData);
         // sensorSingleData = noise.filter(sensorSingleData);
 
-        /*
         SensorSingleData meanSingleData = mean.filter(sensorSingleData);
         if (meanSingleData != null) {
-            meanSingleData = lowPass.filter(meanSingleData);
-            exportNewSensorData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, meanSingleData);
+            sensorSingleData = complementary.startProcess(meanSingleData);
+            computeFinalMeanAndExport(sensorSingleData);
         }
-        */
-        // sensorSingleData = butterWorth.filter(sensorSingleData);
+    }
 
-        complementary.startProcess(sensorSingleData);
-
-        exportNewSensorData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, sensorSingleData);
+    private void computeFinalMeanAndExport(SensorSingleData sensorSingleData) {
+        SensorSingleData meanSingleData = finalMean.filter(sensorSingleData);
+        if (meanSingleData != null) {
+            ResultantVector resultantVector = new ResultantVector(meanSingleData);
+            exportNewData(Constants.MAGNITUDE_ACCELERATION_FILE_EXPORT, resultantVector.toString());
+            exportNewData(Constants.LINEAR_ACCELERATION_FILE_EXPORT, meanSingleData.toString());
+        }
     }
 
     private void registerBus() {
         BusProvider.getInstance().register(this);
     }
 
-    private void exportNewSensorData(String name, SensorSingleData sensorSingleData) {
-        exporter.writeData(name, sensorSingleData.toString());
+    private void exportNewData(String filename, String line) {
+        exporter.writeData(filename, line);
     }
 }

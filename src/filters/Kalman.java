@@ -43,9 +43,7 @@ public class Kalman {
         }
         isInitialised = true;
 
-        sensorSingleData.setAccX(initValues.get(0));
-        sensorSingleData.setAccY(initValues.get(1));
-        sensorSingleData.setAccZ(initValues.get(2));
+        sensorSingleData.setAccX(initValues.get(0)).setAccY(initValues.get(1)).setAccZ(initValues.get(2));
 
         return sensorSingleData;
     }
@@ -68,9 +66,10 @@ public class Kalman {
                 correctedValues.add(i, correctedValue);
             }
 
-            sensorSingleData.setAccX(correctedValues.get(0));
-            sensorSingleData.setAccY(correctedValues.get(1));
-            sensorSingleData.setAccZ(correctedValues.get(2));
+            sensorSingleData
+                    .setAccX(correctedValues.get(0))
+                    .setAccY(correctedValues.get(1))
+                    .setAccZ(correctedValues.get(2));
 
             return sensorSingleData;
         } else {

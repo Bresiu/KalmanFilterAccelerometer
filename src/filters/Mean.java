@@ -1,12 +1,12 @@
 package filters;
 
-import constants.Constants;
 import factory.SensorSingleData;
 
 public class Mean {
 
-    private long counter;
+    private int windowLength;
 
+    private long counter;
     private int meanCounter;
 
     private double meanAccX;
@@ -21,7 +21,8 @@ public class Mean {
     private double meanMagnY;
     private double meanMagnZ;
 
-    public Mean() {
+    public Mean(int windowLength) {
+        this.windowLength = windowLength;
         counter = 0;
         initObjects();
     }
@@ -57,43 +58,42 @@ public class Mean {
 
         meanCounter++;
 
-        return checkFilterWindow(sensorSingleData);
-    }
-
-    private SensorSingleData checkFilterWindow(SensorSingleData sensorSingleData) {
-        if (meanCounter == Constants.MEAN_FILTER_WINDOW) {
-
-            meanAccX /= Constants.MEAN_FILTER_WINDOW;
-            meanAccY /= Constants.MEAN_FILTER_WINDOW;
-            meanAccZ /= Constants.MEAN_FILTER_WINDOW;
-
-            meanGyroX /= Constants.MEAN_FILTER_WINDOW;
-            meanGyroY /= Constants.MEAN_FILTER_WINDOW;
-            meanGyroZ /= Constants.MEAN_FILTER_WINDOW;
-
-            meanMagnX /= Constants.MEAN_FILTER_WINDOW;
-            meanMagnY /= Constants.MEAN_FILTER_WINDOW;
-            meanMagnZ /= Constants.MEAN_FILTER_WINDOW;
-
-            sensorSingleData.setAccX(meanAccX);
-            sensorSingleData.setAccY(meanAccY);
-            sensorSingleData.setAccZ(meanAccZ);
-
-            sensorSingleData.setGyroX(meanGyroX);
-            sensorSingleData.setGyroY(meanGyroY);
-            sensorSingleData.setGyroZ(meanGyroZ);
-
-            sensorSingleData.setMagnX(meanMagnX);
-            sensorSingleData.setMagnY(meanMagnY);
-            sensorSingleData.setMagnZ(meanMagnZ);
-
-            sensorSingleData.setNumber(counter);
-            counter++;
-
-            initObjects();
-
-            return sensorSingleData;
+        if (checkFilterWindow()) {
+            return createSensorSingleData(sensorSingleData);
         }
         return null;
+
+    }
+
+    private boolean checkFilterWindow() {
+        return meanCounter == windowLength;
+    }
+
+    private SensorSingleData createSensorSingleData(SensorSingleData sensorSingleData) {
+
+        meanAccX /= windowLength;
+        meanAccY /= windowLength;
+        meanAccZ /= windowLength;
+
+        meanGyroX /= windowLength;
+        meanGyroY /= windowLength;
+        meanGyroZ /= windowLength;
+
+        meanMagnX /= windowLength;
+        meanMagnY /= windowLength;
+        meanMagnZ /= windowLength;
+
+        sensorSingleData
+                .setAccX(meanAccX).setAccY(meanAccY).setAccZ(meanAccZ)
+                .setGyroX(meanGyroX).setGyroY(meanGyroY).setGyroZ(meanGyroZ)
+                .setMagnX(meanMagnX).setMagnY(meanMagnY).setMagnZ(meanMagnZ)
+                .setNumber(counter);
+
+        counter++;
+
+        initObjects();
+
+        return sensorSingleData;
+
     }
 }

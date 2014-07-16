@@ -6,10 +6,9 @@ public class Filter {
     public SensorSingleData extractGravity(SensorSingleData sensorSingleData, double gravityX,
                                            double gravityY, double gravityZ) {
 
-        sensorSingleData.setAccX(sensorSingleData.getAccX() - gravityX);
-        sensorSingleData.setAccY(sensorSingleData.getAccY() - gravityY);
-        sensorSingleData.setAccZ(sensorSingleData.getAccZ() - gravityZ);
-
-        return sensorSingleData;
+        return sensorSingleData
+                .setAccX(sensorSingleData.getAccX() - gravityX)
+                .setAccY(sensorSingleData.getAccY() - gravityY)
+                .setAccZ(sensorSingleData.getAccZ() - gravityZ);
     }
 }

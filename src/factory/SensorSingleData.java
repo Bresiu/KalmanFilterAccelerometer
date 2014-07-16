@@ -34,7 +34,9 @@ public class SensorSingleData {
         this.magnZ = magnZ;
     }
 
-    public long getNumber() { return number; }
+    public long getNumber() {
+        return number;
+    }
 
     public void setNumber(long number) {
         this.number = number;
@@ -52,68 +54,81 @@ public class SensorSingleData {
         return accX;
     }
 
-    public void setAccX(double accX) {
+    public SensorSingleData setAccX(double accX) {
         this.accX = accX;
+        return this;
     }
 
     public double getAccY() {
         return accY;
     }
 
-    public void setAccY(double accY) {
+    public SensorSingleData setAccY(double accY) {
         this.accY = accY;
+        return this;
     }
 
-    public double getAccZ() { return accZ; }
+    public double getAccZ() {
+        return accZ;
+    }
 
-    public void setAccZ(double accZ) { this.accZ = accZ; }
+    public SensorSingleData setAccZ(double accZ) {
+        this.accZ = accZ;
+        return this;
+    }
 
     public double getGyroX() {
         return gyroX;
     }
 
-    public void setGyroX(double gyroX) {
+    public SensorSingleData setGyroX(double gyroX) {
         this.gyroX = gyroX;
+        return this;
     }
 
     public double getGyroY() {
         return gyroY;
     }
 
-    public void setGyroY(double gyroY) {
+    public SensorSingleData setGyroY(double gyroY) {
         this.gyroY = gyroY;
+        return this;
     }
 
     public double getGyroZ() {
         return gyroZ;
     }
 
-    public void setGyroZ(double gyroZ) {
+    public SensorSingleData setGyroZ(double gyroZ) {
         this.gyroZ = gyroZ;
+        return this;
     }
 
     public double getMagnX() {
         return magnX;
     }
 
-    public void setMagnX(double magnX) {
+    public SensorSingleData setMagnX(double magnX) {
         this.magnX = magnX;
+        return this;
     }
 
     public double getMagnY() {
         return magnY;
     }
 
-    public void setMagnY(double magnY) {
+    public SensorSingleData setMagnY(double magnY) {
         this.magnY = magnY;
+        return this;
     }
 
     public double getMagnZ() {
         return magnZ;
     }
 
-    public void setMagnZ(double magnZ) {
+    public SensorSingleData setMagnZ(double magnZ) {
         this.magnZ = magnZ;
+        return this;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class Complementary {
     private long timeStamp;
     private boolean initState = false;
 
-    private ButterWorth butterWorth;
+    // private ButterWorth butterWorth;
 
     private SensorSingleData sensorSingleData;
 
@@ -53,26 +53,18 @@ public class Complementary {
         gyroMatrix[6] = 0.0f;
         gyroMatrix[7] = 0.0f;
         gyroMatrix[8] = 1.0f;
-
-        // butterWorth = new ButterWorth();
     }
 
     public SensorSingleData startProcess(SensorSingleData sensorSingleData) {
         this.sensorSingleData = sensorSingleData;
         timeStamp = sensorSingleData.getTimestamp();
 
-        // TODO: MEAN FILTER THIS
         acceleration = new float[]{(float) sensorSingleData.getAccX(), (float) sensorSingleData.getAccY(),
                 (float) sensorSingleData.getAccZ()};
         magnetic = new float[]{(float) sensorSingleData.getMagnX(), (float) sensorSingleData.getMagnY(),
                 (float) sensorSingleData.getMagnZ()};
         gyroscope = new float[]{(float) sensorSingleData.getGyroX(), (float) sensorSingleData.getGyroY(),
                 (float) sensorSingleData.getGyroZ()};
-
-        // sensorSingleData = butterWorth.filter(sensorSingleData);
-
-        // gravity = new float[]{(float) sensorSingleData.getAccX(), (float) sensorSingleData.getAccY(),
-        //       (float) sensorSingleData.getAccZ()};
 
         calculateOrientation();
         calculateGyro(sensorSingleData.getTimestamp());
@@ -257,9 +249,7 @@ public class Complementary {
         return result;
     }
 
-    /**
-     * Calculates a rotation vector from the gyroscope angular speed values. gyroValues deltaRotationVector timeFactor
-     */
+    // Calculates a rotation vector from the gyroscope angular speed values. gyroValues deltaRotationVector timeFactor
     private void getRotationVectorFromGyro(float timeFactor) {
 
         // Calculate the angular speed of the sample
@@ -389,8 +379,7 @@ public class Complementary {
             fusedOrientation[2] = Constants.FILTER_COEFFICIENT * gyroOrientation[2] + oneMinusCoeff * orientation[2];
         }
 
-        // overwrite gyro matrix and orientation with fused orientation
-        // to comensate gyro drift
+        // overwrite gyro matrix and orientation with fused orientation to comensate gyro drift
         gyroMatrix = getRotationMatrixFromOrientation(fusedOrientation);
 
         System.arraycopy(fusedOrientation, 0, gyroOrientation, 0, 3);
@@ -402,10 +391,6 @@ public class Complementary {
      * rotation matrix, only the orientation from a rotation matrix. The basic
      * rotations can be found in Wikipedia with the caveat that the rotations
      * are *transposed* relative to what is required for this method.
-     *
-     * @param device orientation.
-     * @return The rotation matrix from the orientation.
-     * @see http://en.wikipedia.org/wiki/Rotation_matrix
      */
     private float[] getRotationMatrixFromOrientation(float[] orientation) {
         float[] xM = new float[9];
@@ -484,10 +469,9 @@ public class Complementary {
     }
 
     private SensorSingleData portToSingleData() {
-        sensorSingleData.setAccX(linearAcceleration[0]);
-        sensorSingleData.setAccY(linearAcceleration[1]);
-        sensorSingleData.setAccZ(linearAcceleration[2]);
-
-        return sensorSingleData;
+        return sensorSingleData
+                .setAccX(linearAcceleration[0])
+                .setAccZ(linearAcceleration[1])
+                .setAccZ(linearAcceleration[2]);
     }
 }
