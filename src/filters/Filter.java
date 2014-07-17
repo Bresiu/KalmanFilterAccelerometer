@@ -1,6 +1,6 @@
 package filters;
 
-import factory.SensorSingleData;
+import containers.SensorSingleData;
 
 public class Filter {
     public SensorSingleData extractGravity(SensorSingleData sensorSingleData, double gravityX,

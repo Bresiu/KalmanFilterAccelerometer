@@ -1,7 +1,7 @@
 package filters;
 
 import constants.Constants;
-import factory.XYZVector;
+import containers.XYZVector;
 
 public class ButterWorth {
 

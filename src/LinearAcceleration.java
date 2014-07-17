@@ -1,8 +1,9 @@
 import bus.BusProvider;
 import com.google.common.eventbus.Subscribe;
 import constants.Constants;
-import factory.ResultantVector;
-import factory.SensorSingleData;
+import containers.AccMagn;
+import containers.helpers.AccMagnCalculator;
+import containers.SensorSingleData;
 import filters.*;
 import io.Exporter;
 
@@ -32,8 +33,8 @@ public class LinearAcceleration {
         wikipedia = new Wikipedia();
         bandPass = new BandPass();
         noise = new Noise();
-        mean = new Mean();
-        finalMean = new Mean();
+        mean = new Mean(Constants.MEAN_FILTER_WINDOW);
+        finalMean = new Mean(Constants.FINAL_MEAN_FILTER_WINDOW);
         kalman = new Kalman();
         butterWorth = new ButterWorth();
         complementary = new Complementary();
@@ -62,9 +63,12 @@ public class LinearAcceleration {
     private void computeFinalMeanAndExport(SensorSingleData sensorSingleData) {
         SensorSingleData meanSingleData = finalMean.filter(sensorSingleData);
         if (meanSingleData != null) {
-            ResultantVector resultantVector = new ResultantVector(meanSingleData);
-            exportNewData(Constants.MAGNITUDE_ACCELERATION, resultantVector.toString());
+
+            AccMagnCalculator accVector = new AccMagnCalculator(meanSingleData);
+            AccMagn accMagn = accVector.getLength();
+
             exportNewData(Constants.LINEAR_ACCELERATION, meanSingleData.toString());
+            exportNewData(Constants.MAGNITUDE_ACCELERATION, accMagn.toString());
         }
     }
 

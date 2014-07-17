@@ -1,4 +1,4 @@
-package factory;
+package containers;
 
 public class SensorSingleData {
     private long number;

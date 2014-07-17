@@ -1,7 +1,7 @@
 package filters;
 
 import constants.Constants;
-import factory.SensorSingleData;
+import containers.SensorSingleData;
 
 import java.util.ArrayList;
 import java.util.List;

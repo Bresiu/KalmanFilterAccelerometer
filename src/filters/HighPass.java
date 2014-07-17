@@ -1,7 +1,7 @@
 package filters;
 
 import constants.Constants;
-import factory.SensorSingleData;
+import containers.SensorSingleData;
 
 public class HighPass extends Filter {
 

@@ -1,6 +1,6 @@
 package filters;
 
-import factory.SensorSingleData;
+import containers.SensorSingleData;
 
 public class BandPass {
 

@@ -1,4 +1,4 @@
-package factory;
+package containers;
 
 public class XYZVector {
     private double vectX;

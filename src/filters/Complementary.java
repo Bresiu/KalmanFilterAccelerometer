@@ -1,7 +1,7 @@
 package filters;
 
 import constants.Constants;
-import factory.SensorSingleData;
+import containers.SensorSingleData;
 
 public class Complementary {
     // Nano-second to second conversion

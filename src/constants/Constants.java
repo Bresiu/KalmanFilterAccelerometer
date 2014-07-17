@@ -28,7 +28,6 @@ public class Constants {
     // Wikipedia filter
     public static final float WIKIPEDIA_ALPHA = 0.15f;
 
-    // TODO
     // Mean Filter
     public static final int MEAN_FILTER_WINDOW = 10;
     public static final int FINAL_MEAN_FILTER_WINDOW = 20;
@@ -47,4 +46,5 @@ public class Constants {
     public static final String LINEAR_ACCELERATION = "linear_acceleration.dat";
     public static final String MAGNITUDE_ACCELERATION = "magnitude_acceleration.dat";
     public static final String GPS_DATA = "gps_data.dat";
+    public static final String NEW_GPS_DATA = "new_gps_data.dat";
 }
