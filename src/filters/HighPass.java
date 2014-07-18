@@ -5,17 +5,21 @@ import containers.SensorSingleData;
 
 public class HighPass extends Filter {
 
-    SensorSingleData sensorSingleData;
+    private SensorSingleData sensorSingleData;
 
-    double gravityHighPassX;
-    double gravityHighPassY;
-    double gravityHighPassZ;
+    private double preTimestamp;
+
+    private double gravityHighPassX;
+    private double gravityHighPassY;
+    private double gravityHighPassZ;
 
     public HighPass() {
         initObjects();
     }
 
     private void initObjects() {
+        preTimestamp = 0.0;
+
         gravityHighPassX = 0.0;
         gravityHighPassY = 0.0;
         gravityHighPassZ = 0.0;
@@ -28,12 +32,16 @@ public class HighPass extends Filter {
     }
 
     private void computeGravity() {
-        gravityHighPassX = Constants.HIGH_PASS_ALPHA * gravityHighPassX + (1.0f - Constants.HIGH_PASS_ALPHA)
-                * sensorSingleData.getAccX();
-        gravityHighPassY = Constants.HIGH_PASS_ALPHA * gravityHighPassY + (1.0f - Constants.HIGH_PASS_ALPHA)
-                * sensorSingleData.getAccY();
-        gravityHighPassZ = Constants.HIGH_PASS_ALPHA * gravityHighPassZ + (1.0f - Constants.HIGH_PASS_ALPHA)
-                * sensorSingleData.getAccZ();
+        if (preTimestamp == 0.0) {
+            preTimestamp = sensorSingleData.getTimestamp();
+        }
+        double dt = (sensorSingleData.getTimestamp() - preTimestamp);
+        double alpha = dt / (Constants.HIGH_PASS_RC + dt);
+        preTimestamp = sensorSingleData.getTimestamp();
+
+        gravityHighPassX = alpha * gravityHighPassX + (1.0f - alpha) * sensorSingleData.getAccX();
+        gravityHighPassY = alpha * gravityHighPassY + (1.0f - alpha) * sensorSingleData.getAccY();
+        gravityHighPassZ = alpha * gravityHighPassZ + (1.0f - alpha) * sensorSingleData.getAccZ();
     }
 
     private SensorSingleData extractGravity() {

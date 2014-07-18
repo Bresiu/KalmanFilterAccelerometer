@@ -47,17 +47,20 @@ public class LinearAcceleration {
 
     private void filter(SensorSingleData sensorSingleData) {
         // sensorSingleData = kalman.filter(sensorSingleData);
+        // sensorSingleData = mean.filter(sensorSingleData);
         // sensorSingleData = bandPass.filter(sensorSingleData);
         // sensorSingleData = lowPass.filter(sensorSingleData);
         // sensorSingleData = highPass.filter(sensorSingleData);
         // sensorSingleData = wikipedia.filter(sensorSingleData);
         // sensorSingleData = noise.filter(sensorSingleData);
 
+
         SensorSingleData meanSingleData = mean.filter(sensorSingleData);
         if (meanSingleData != null) {
-            sensorSingleData = complementary.startProcess(meanSingleData);
+            sensorSingleData = bandPass.filter(meanSingleData);
             computeFinalMeanAndExport(sensorSingleData);
         }
+
     }
 
     private void computeFinalMeanAndExport(SensorSingleData sensorSingleData) {

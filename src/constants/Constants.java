@@ -11,7 +11,7 @@ public class Constants {
     public static final float EPSILON = 0.000000001f;
 
     // Nanosecond to second
-    public static final double NS2S = 1.0f / 1000000000.0f;
+    public static final double NS2S = 1.0 / 1000000000.0;
 
     // Butterworth / Low Pass - Q
     public static final float Q = 0.7071f;
@@ -23,14 +23,14 @@ public class Constants {
     public static final float LOW_PASS_ALPHA = 0.1f;
 
     // High-Pass Filter
-    public static final float HIGH_PASS_ALPHA = 0.9f;
+    public static final double HIGH_PASS_RC = 0.01;
 
     // Wikipedia filter
     public static final float WIKIPEDIA_ALPHA = 0.15f;
 
     // Mean Filter
-    public static final int MEAN_FILTER_WINDOW = 10;
-    public static final int FINAL_MEAN_FILTER_WINDOW = 20;
+    public static final int MEAN_FILTER_WINDOW = 5;
+    public static final int FINAL_MEAN_FILTER_WINDOW = 10;
 
     // Noise delta error
     public static final double NOISE_DELTA_ERROR = 0.2;

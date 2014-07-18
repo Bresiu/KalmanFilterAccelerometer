@@ -14,7 +14,6 @@ public class AccFinder {
 
         // TODO: add boundary conditions (if arrays.size() < 2...)
 
-
         long accMagnPreTimestamp = magns.get(0).getTimestamp();
         int k = 0;
 

@@ -3,6 +3,7 @@ package filters;
 import containers.SensorSingleData;
 
 public class Filter {
+    // TODO: change gravity variables to XYZVector.class object
     public SensorSingleData extractGravity(SensorSingleData sensorSingleData, double gravityX,
                                            double gravityY, double gravityZ) {
 

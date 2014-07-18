@@ -14,13 +14,14 @@ public class BandPass {
     }
 
     private void initFilters() {
-        lowPass = new LowPass();
         highPass = new HighPass();
+        lowPass = new LowPass();
     }
 
     public SensorSingleData filter(SensorSingleData sensorSingleData) {
-        this.sensorSingleData = lowPass.filter(sensorSingleData);
+        this.sensorSingleData = sensorSingleData;
         this.sensorSingleData = highPass.filter(this.sensorSingleData);
+        this.sensorSingleData = lowPass.filter(this.sensorSingleData);
         return this.sensorSingleData;
     }
 }
