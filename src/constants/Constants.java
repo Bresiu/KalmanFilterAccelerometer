@@ -20,16 +20,20 @@ public class Constants {
     public static final double EARTH_GRAVITY = 9.80665;
 
     // Low-Pass Filter
-    public static final float LOW_PASS_ALPHA = 0.1f;
+    // lower value is -> output has smaller amplitude
+    // lower value is -> output is smoother, but picks are less visible (eliminate noise)
+    // public static final float LOW_PASS_ALPHA = 0.7f; // CAR -> 0.1f // walk -> 2f
+    public static final float LOW_PASS_ALPHA = 0.1f; // CAR -> 0.1f // walk -> 2f
 
     // High-Pass Filter
-    public static final double HIGH_PASS_RC = 0.01;
+    // higher value is -> long duration changes have smaller impact (values more likely to oscillate around "zero")
+    public static final double HIGH_PASS_RC = 0.3f; // CAR -> 0.01f // walk -> 0.9f
 
     // Wikipedia filter
     public static final float WIKIPEDIA_ALPHA = 0.15f;
 
     // Mean Filter
-    public static final int MEAN_FILTER_WINDOW = 5;
+    public static final int MEAN_FILTER_WINDOW = 10;
     public static final int FINAL_MEAN_FILTER_WINDOW = 10;
 
     // Noise delta error
@@ -43,6 +47,8 @@ public class Constants {
     // public static final String SENSOR_FILE = "log.dat";
     public static final String SENSOR_FILE = "accGravCar.dat";
     // public static final String SENSOR_FILE = "accGrav.dat";
+    public static final String PEDOMETER = "accGrav2.dat";
+    public static final String PEAKS = "peaks.dat";
     public static final String LINEAR_ACCELERATION = "linear_acceleration.dat";
     public static final String MAGNITUDE_ACCELERATION = "magnitude_acceleration.dat";
     public static final String GPS_DATA = "gps_data.dat";

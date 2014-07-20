@@ -5,6 +5,9 @@ public class XYZVector {
     private double vectY;
     private double vectZ;
 
+    public XYZVector() {
+    }
+
     public XYZVector(SensorSingleData sensorSingleData) {
         this.vectX = sensorSingleData.getAccX();
         this.vectY = sensorSingleData.getAccY();

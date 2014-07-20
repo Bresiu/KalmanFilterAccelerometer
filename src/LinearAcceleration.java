@@ -2,8 +2,8 @@ import bus.BusProvider;
 import com.google.common.eventbus.Subscribe;
 import constants.Constants;
 import containers.AccMagn;
-import containers.helpers.AccMagnCalculator;
 import containers.SensorSingleData;
+import containers.helpers.AccMagnCalculator;
 import filters.*;
 import io.Exporter;
 
@@ -17,9 +17,12 @@ public class LinearAcceleration {
     Noise noise;
     Mean mean;
     Mean finalMean;
+    MeanWindow meanWindow;
+    MeanWindow finalMeanWindow;
     Kalman kalman;
     ButterWorth butterWorth;
     Complementary complementary;
+    Peak peak;
 
     public LinearAcceleration() {
         initObjects();
@@ -35,9 +38,12 @@ public class LinearAcceleration {
         noise = new Noise();
         mean = new Mean(Constants.MEAN_FILTER_WINDOW);
         finalMean = new Mean(Constants.FINAL_MEAN_FILTER_WINDOW);
+        meanWindow = new MeanWindow(Constants.MEAN_FILTER_WINDOW);
+        finalMeanWindow = new MeanWindow(Constants.FINAL_MEAN_FILTER_WINDOW);
         kalman = new Kalman();
         butterWorth = new ButterWorth();
         complementary = new Complementary();
+        peak = new Peak();
     }
 
     @Subscribe
@@ -55,12 +61,37 @@ public class LinearAcceleration {
         // sensorSingleData = noise.filter(sensorSingleData);
 
 
+        sensorSingleData = meanWindow.filter(sensorSingleData);
+        sensorSingleData = highPass.filter(sensorSingleData);
+        sensorSingleData = lowPass.filter(sensorSingleData);
+        sensorSingleData = finalMeanWindow.filter(sensorSingleData);
+
+        sensorSingleData = peak.filter(sensorSingleData);
+
+        exportNewData(Constants.LINEAR_ACCELERATION, sensorSingleData.toString());
+
+        /**
+         * DONT TOUCH THIS!
+         *
+         *
+         */
+        /*
+        sensorSingleData = highPass.filter(sensorSingleData);
+        sensorSingleData = lowPass.filter(sensorSingleData);
+
+        // exportNewData(Constants.LINEAR_ACCELERATION, sensorSingleData.toString());
+
+
         SensorSingleData meanSingleData = mean.filter(sensorSingleData);
         if (meanSingleData != null) {
-            sensorSingleData = bandPass.filter(meanSingleData);
-            computeFinalMeanAndExport(sensorSingleData);
-        }
+            AccMagnCalculator accVector = new AccMagnCalculator(meanSingleData);
+            AccMagn accMagn = accVector.getLength();
 
+            exportNewData(Constants.MAGNITUDE_ACCELERATION, accMagn.toString());
+            exportNewData(Constants.LINEAR_ACCELERATION, meanSingleData.toString());
+            // computeFinalMeanAndExport(meanSingleData);
+        }
+        */
     }
 
     private void computeFinalMeanAndExport(SensorSingleData sensorSingleData) {
