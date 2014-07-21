@@ -43,11 +43,19 @@ public class Constants {
     public static final double VARIANCE = 0.05;
     public static final double FILTER_GAIN = 0.8;
 
+    // Peak Filter
+    public static final double BOTTOM_X_UP_Z = 2.5;
+    public static final double UP_X_BOTTOM_Z = 2.55;
+    public static final double UP_X_UP_Z = 2.6;
+    public static final double PEAK_Y = 0;
+    public static final double STEP = -0.3;
+
     // Filenames
     // public static final String SENSOR_FILE = "log.dat";
     public static final String SENSOR_FILE = "accGravCar.dat";
     // public static final String SENSOR_FILE = "accGrav.dat";
-    public static final String PEDOMETER = "accGrav2.dat";
+    public static final String STEPS = "accGrav2.dat";
+    public static final String PEDOMETER = "pdm.dat";
     public static final String PEAKS = "peaks.dat";
     public static final String LINEAR_ACCELERATION = "linear_acceleration.dat";
     public static final String MAGNITUDE_ACCELERATION = "magnitude_acceleration.dat";

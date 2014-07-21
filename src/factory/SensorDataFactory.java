@@ -15,7 +15,7 @@ public class SensorDataFactory {
 
     public SensorDataFactory() {
         Importer importer = new Importer();
-        sensorDataLines = importer.readData(Constants.PEDOMETER);
+        sensorDataLines = importer.readData(Constants.STEPS);
         registerBus();
         startFactory();
     }

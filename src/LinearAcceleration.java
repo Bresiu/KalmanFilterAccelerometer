@@ -2,6 +2,7 @@ import bus.BusProvider;
 import com.google.common.eventbus.Subscribe;
 import constants.Constants;
 import containers.AccMagn;
+import containers.PedometerData;
 import containers.SensorSingleData;
 import containers.helpers.AccMagnCalculator;
 import filters.*;
@@ -59,21 +60,18 @@ public class LinearAcceleration {
         // sensorSingleData = highPass.filter(sensorSingleData);
         // sensorSingleData = wikipedia.filter(sensorSingleData);
         // sensorSingleData = noise.filter(sensorSingleData);
-
-
+        
         sensorSingleData = meanWindow.filter(sensorSingleData);
         sensorSingleData = highPass.filter(sensorSingleData);
         sensorSingleData = lowPass.filter(sensorSingleData);
         sensorSingleData = finalMeanWindow.filter(sensorSingleData);
 
-        sensorSingleData = peak.filter(sensorSingleData);
+        PedometerData pedometerData = peak.filter(sensorSingleData);
 
-        exportNewData(Constants.LINEAR_ACCELERATION, sensorSingleData.toString());
+        exportNewData(Constants.PEDOMETER, pedometerData.toString());
 
         /**
          * DONT TOUCH THIS!
-         *
-         *
          */
         /*
         sensorSingleData = highPass.filter(sensorSingleData);

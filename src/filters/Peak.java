@@ -1,6 +1,9 @@
 package filters;
 
+import constants.Constants;
+import containers.PedometerData;
 import containers.SensorSingleData;
+import pedometer.StepDetector;
 
 public class Peak {
 
@@ -16,6 +19,8 @@ public class Peak {
     private boolean isUpPeakY;
     private boolean isUpPeakZ;
 
+    private StepDetector stepDetector;
+
     public Peak() {
         peakX = 0.0;
         peakY = 0.0;
@@ -28,19 +33,39 @@ public class Peak {
         isUpPeakX = false;
         isUpPeakY = false;
         isUpPeakZ = false;
+
+        stepDetector = new StepDetector();
     }
 
-    public SensorSingleData filter(SensorSingleData sensorSingleData) {
+    public PedometerData filter(SensorSingleData sensorSingleData) {
 
         double x = sensorSingleData.getAccX();
         double y = sensorSingleData.getAccY();
         double z = sensorSingleData.getAccZ();
 
-        // peakX = checkForPeak(isUpPeakX, x, lastX);
-        // peakY = checkForPeak(isUpPeakY, y, lastY);
-        // peakZ = checkForPeak(isUpPeakZ, z, lastZ);
+        checkForPeakX(x);
+        checkForPeakY(y);
+        checkForPeakZ(z);
 
+        PedometerData pedometerData = new PedometerData(
+                sensorSingleData.getNumber(),
+                sensorSingleData.getTimestamp(),
+                peakX,
+                peakY,
+                peakZ);
 
+        pedometerData.setBottomXupZ((!isUpPeakX && isUpPeakZ) ? Constants.BOTTOM_X_UP_Z : null);
+        pedometerData.setUpXbottomZ((isUpPeakX && !isUpPeakZ) ? Constants.UP_X_BOTTOM_Z : null);
+        pedometerData.setUpXupZ((isUpPeakX && isUpPeakZ) ? Constants.UP_X_UP_Z : null);
+        pedometerData.setUpY(isUpPeakY ? Constants.PEAK_Y : null);
+        pedometerData.setBottomY(!isUpPeakY ? Constants.PEAK_Y : null);
+
+        pedometerData.setStep(stepDetector.process(isUpPeakX, isUpPeakY, isUpPeakZ) ? Constants.STEP : null);
+
+        return pedometerData;
+    }
+
+    private void checkForPeakX(double x) {
         if (isUpPeakX) {
             if (x < lastX) {
                 peakX = lastX;
@@ -52,8 +77,11 @@ public class Peak {
                 isUpPeakX = true;
             }
         }
-        lastX = x;
 
+        lastX = x;
+    }
+
+    private void checkForPeakY(double y) {
         if (isUpPeakY) {
             if (y < lastY) {
                 peakY = lastY;
@@ -65,8 +93,11 @@ public class Peak {
                 isUpPeakY = true;
             }
         }
-        lastY = y;
 
+        lastY = y;
+    }
+
+    private void checkForPeakZ(double z) {
         if (isUpPeakZ) {
             if (z < lastZ) {
                 peakZ = lastZ;
@@ -80,25 +111,6 @@ public class Peak {
         }
 
         lastZ = z;
-
-        return sensorSingleData.setAccX(peakX).setAccY(peakY).setAccZ(peakZ);
     }
-
-    private double checkForPeak(boolean isUpPeak, double value, double lastValue) {
-
-        if (isUpPeak) {
-            if (value < lastValue) {
-                isUpPeak = false;
-                return lastValue;
-            }
-        } else {
-            if (value > lastValue) {
-                isUpPeak = true;
-                return lastValue;
-            }
-        }
-        return lastValue;
-    }
-
 
 }
