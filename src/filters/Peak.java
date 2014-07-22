@@ -60,7 +60,7 @@ public class Peak {
         pedometerData.setUpY(isUpPeakY ? Constants.PEAK_Y : null);
         pedometerData.setBottomY(!isUpPeakY ? Constants.PEAK_Y : null);
 
-        pedometerData.setStep(stepDetector.process(isUpPeakX, isUpPeakY, isUpPeakZ) ? Constants.STEP : null);
+        pedometerData.setStep(stepDetector.process(isUpPeakX, isUpPeakY, isUpPeakZ, x) ? Constants.STEP : null);
 
         return pedometerData;
     }

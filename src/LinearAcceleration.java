@@ -68,6 +68,7 @@ public class LinearAcceleration {
 
         PedometerData pedometerData = peak.filter(sensorSingleData);
 
+        exportNewData(Constants.LINEAR_ACCELERATION, sensorSingleData.toString());
         exportNewData(Constants.PEDOMETER, pedometerData.toString());
 
         /**
