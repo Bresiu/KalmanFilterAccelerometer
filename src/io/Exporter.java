@@ -7,12 +7,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class Exporter {
-    public void writeData(String name, String line) {
-        line += "\n";
-        try {
-            Files.append(line, new File(name), Charsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	public void writeData(String name, String line) {
+		line += "\n";
+		try {
+			Files.append(line, new File(name), Charsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

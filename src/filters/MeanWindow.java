@@ -6,62 +6,62 @@ import java.util.LinkedList;
 
 public class MeanWindow {
 
-    private int windowLength;
+	private int windowLength;
 
-    private LinkedList<Double> accXList;
-    private LinkedList<Double> accYList;
-    private LinkedList<Double> accZList;
+	private LinkedList<Double> accXList;
+	private LinkedList<Double> accYList;
+	private LinkedList<Double> accZList;
 
-    private int counter;
+	private int counter;
 
-    public MeanWindow(int windowLength) {
-        this.windowLength = windowLength;
+	public MeanWindow(int windowLength) {
+		this.windowLength = windowLength;
 
-        initVariables();
-    }
+		initVariables();
+	}
 
-    private void initVariables() {
-        accXList = new LinkedList<Double>();
-        accYList = new LinkedList<Double>();
-        accZList = new LinkedList<Double>();
+	private void initVariables() {
+		accXList = new LinkedList<Double>();
+		accYList = new LinkedList<Double>();
+		accZList = new LinkedList<Double>();
 
-        counter = 0;
-    }
+		counter = 0;
+	}
 
-    public SensorSingleData filter(SensorSingleData sensorSingleData) {
-        accXList.addFirst(sensorSingleData.getAccX());
-        accYList.addFirst(sensorSingleData.getAccY());
-        accZList.addFirst(sensorSingleData.getAccZ());
+	public SensorSingleData filter(SensorSingleData sensorSingleData) {
+		accXList.addFirst(sensorSingleData.getAccX());
+		accYList.addFirst(sensorSingleData.getAccY());
+		accZList.addFirst(sensorSingleData.getAccZ());
 
-        counter++;
+		counter++;
 
-        return getMean(sensorSingleData);
-    }
+		return getMean(sensorSingleData);
+	}
 
-    private SensorSingleData getMean(SensorSingleData sensorSingleData) {
-        double x = computeMean(accXList);
-        double y = computeMean(accYList);
-        double z = computeMean(accZList);
+	private SensorSingleData getMean(SensorSingleData sensorSingleData) {
+		double x = computeMean(accXList);
+		double y = computeMean(accYList);
+		double z = computeMean(accZList);
 
-        if (counter == windowLength) {
+		if (counter == windowLength) {
 
-            accXList.removeLast();
-            accYList.removeLast();
-            accZList.removeLast();
+			accXList.removeLast();
+			accYList.removeLast();
+			accZList.removeLast();
 
-            counter--;
-        }
+			counter--;
+		}
 
-        return sensorSingleData.setAccX(x).setAccY(y).setAccZ(z);
-    }
+		return sensorSingleData.setAccX(x).setAccY(y).setAccZ(z);
+	}
 
-    private double computeMean(LinkedList<Double> accList) {
-        Double result = 0.0;
+	private double computeMean(LinkedList<Double> accList) {
+		Double result = 0.0;
 
-        for (Double value : accList) {
-            result += value;
-        }
+		for (Double value : accList) {
+			result += value;
+		}
 
-        return result / counter;
-    }
+		return result / counter;
+	}
 }

@@ -10,29 +10,29 @@ import java.util.List;
 
 public class AccToGpsFactory {
 
-    Exporter exporter;
+	Exporter exporter;
 
-    public AccToGpsFactory() {
-        exporter = new Exporter();
-    }
+	public AccToGpsFactory() {
+		exporter = new Exporter();
+	}
 
-    public void produce() {
-        AccDataFactory accDataFactory = new AccDataFactory();
-        GpsDataFactory gpsDataFactory = new GpsDataFactory();
+	public void produce() {
+		AccDataFactory accDataFactory = new AccDataFactory();
+		GpsDataFactory gpsDataFactory = new GpsDataFactory();
 
-        List<AccMagn> magns = accDataFactory.getAccMagnsFromFile();
-        List<GPSData> gpss = gpsDataFactory.getGpsDataFromFile();
+		List<AccMagn> magns = accDataFactory.getAccMagnsFromFile();
+		List<GPSData> gpss = gpsDataFactory.getGpsDataFromFile();
 
-        AccFinder accFinder = new AccFinder();
-        gpss = accFinder.getAccIter(gpss, magns);
+		AccFinder accFinder = new AccFinder();
+		gpss = accFinder.getAccIter(gpss, magns);
 
-        // TODO: add check for null here
-        for (GPSData gpsData : gpss) {
-            exportNewData(Constants.NEW_GPS_DATA, gpsData.toString());
-        }
-    }
+		// TODO: add check for null here
+		for (GPSData gpsData : gpss) {
+			exportNewData(Constants.NEW_GPS_DATA, gpsData.toString());
+		}
+	}
 
-    private void exportNewData(String filename, String line) {
-        exporter.writeData(filename, line);
-    }
+	private void exportNewData(String filename, String line) {
+		exporter.writeData(filename, line);
+	}
 }

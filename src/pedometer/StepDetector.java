@@ -2,39 +2,39 @@ package pedometer;
 
 public class StepDetector {
 
-    private int peakYcounter;
-    private int bottomYcounter;
+	private int peakYcounter;
+	private int bottomYcounter;
 
-    private Double xValue;
+	private Double xValue;
 
-    private boolean peakOk;
-    private boolean bottomOk;
-    private boolean previousX;
-    private boolean previousY;
+	private boolean peakOk;
+	private boolean bottomOk;
+	private boolean previousX;
+	private boolean previousY;
 
-    private int phase = 0;
+	private int phase = 0;
 
 
-    // TODO move this to constants
-    private static final int WINDOW_SIZE = 10;
+	// TODO move this to constants
+	private static final int WINDOW_SIZE = 10;
 
-    public StepDetector() {
-        initVariables();
-    }
+	public StepDetector() {
+		initVariables();
+	}
 
-    private void initVariables() {
-        previousX = false;
-        previousY = false;
-        peakOk = false;
-        bottomOk = false;
-        peakYcounter = 0;
-        bottomYcounter = 0;
-    }
+	private void initVariables() {
+		previousX = false;
+		previousY = false;
+		peakOk = false;
+		bottomOk = false;
+		peakYcounter = 0;
+		bottomYcounter = 0;
+	}
 
-    public boolean process(boolean peakX, boolean peakY, boolean peakZ, Double xValue) {
+	public boolean process(boolean peakX, boolean peakY, boolean peakZ, Double xValue) {
 
         /*
-        if (peakY) {
+		if (peakY) {
             if (bottomYcounter < WINDOW_SIZE) {
                 bottomYcounter = 0;
                 bottomOk = false;
@@ -52,14 +52,14 @@ public class StepDetector {
             bottomYcounter++;
         }
 */
-        if (bottomOk && peakY && !peakX && peakZ) {
+		if (bottomOk && peakY && !peakX && peakZ) {
 
-        }
-        if (peakX != previousX && peakY != previousY) {
-            return true;
-        }
-        previousX = peakX;
-        previousY = peakY;
+		}
+		if (peakX != previousX && peakY != previousY) {
+			return true;
+		}
+		previousX = peakX;
+		previousY = peakY;
         /*
             phase = 1;
         } else {
@@ -69,6 +69,6 @@ public class StepDetector {
             }
         }
         */
-        return false;
-    }
+		return false;
+	}
 }

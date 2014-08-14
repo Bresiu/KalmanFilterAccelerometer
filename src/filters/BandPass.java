@@ -4,24 +4,24 @@ import containers.SensorSingleData;
 
 public class BandPass {
 
-    SensorSingleData sensorSingleData;
+	SensorSingleData sensorSingleData;
 
-    LowPass lowPass;
-    HighPass highPass;
+	LowPass lowPass;
+	HighPass highPass;
 
-    public BandPass() {
-        initFilters();
-    }
+	public BandPass() {
+		initFilters();
+	}
 
-    private void initFilters() {
-        highPass = new HighPass();
-        lowPass = new LowPass();
-    }
+	private void initFilters() {
+		highPass = new HighPass();
+		lowPass = new LowPass();
+	}
 
-    public SensorSingleData filter(SensorSingleData sensorSingleData) {
-        this.sensorSingleData = sensorSingleData;
-        this.sensorSingleData = highPass.filter(this.sensorSingleData);
-        this.sensorSingleData = lowPass.filter(this.sensorSingleData);
-        return this.sensorSingleData;
-    }
+	public SensorSingleData filter(SensorSingleData sensorSingleData) {
+		this.sensorSingleData = sensorSingleData;
+		this.sensorSingleData = highPass.filter(this.sensorSingleData);
+		this.sensorSingleData = lowPass.filter(this.sensorSingleData);
+		return this.sensorSingleData;
+	}
 }

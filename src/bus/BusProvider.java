@@ -3,12 +3,12 @@ package bus;
 import com.google.common.eventbus.EventBus;
 
 public final class BusProvider {
-    private static final EventBus BUS = new EventBus();
+	private static final EventBus BUS = new EventBus();
 
-    public static EventBus getInstance() {
-        return BUS;
-    }
+	public static EventBus getInstance() {
+		return BUS;
+	}
 
-    private BusProvider() {
-    }
+	private BusProvider() {
+	}
 }
