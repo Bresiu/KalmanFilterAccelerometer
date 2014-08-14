@@ -71,9 +71,6 @@ public class LinearAcceleration {
         exportNewData(Constants.LINEAR_ACCELERATION, sensorSingleData.toString());
         exportNewData(Constants.PEDOMETER, pedometerData.toString());
 
-        /**
-         * DONT TOUCH THIS!
-         */
         /*
         sensorSingleData = highPass.filter(sensorSingleData);
         sensorSingleData = lowPass.filter(sensorSingleData);
